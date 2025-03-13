@@ -778,9 +778,6 @@ LoadOrangePage:
 .NatureString1
 	db "Nature:@"
 
-HelloWorldString:
-	db "Hello world!@"
-
 IDNoString:
 	db "<ID>№.@"
 
