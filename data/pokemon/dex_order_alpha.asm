@@ -387,5 +387,5 @@ AlphabeticalPokedexOrder:
 	dw ZANGOOSE
 	dw ZAPDOS
 	dw ZIGZAGOON
-	dw ZUBAT	
+	dw ZUBAT
 	assert_table_length NUM_POKEMON

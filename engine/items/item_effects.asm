@@ -274,7 +274,7 @@ PokeBallEffect:
 	ld a, [wOTPartyMon1Species]
 	ld [wWildMon], a
 
-	farcall GetModifiedCaptureRate	
+	farcall GetModifiedCaptureRate
 
 	ld d, a
 	push de
