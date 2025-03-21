@@ -102,7 +102,9 @@ DoBattle:
 	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	jr z, .linked_or_something
-
+; Wipe traced ability
+	ld a, TRACE
+	ld [wBattleMonTracedAbility], a
 ; Entrance ability check
 	ld de, wBattleMonSpeed
 	ld hl, wEnemyMonSpeed
@@ -2193,6 +2195,10 @@ DoubleSwitch:
 	call PlayerPartyMonEntrance
 	ld a, $1
 	call EnemyPartyMonEntrance
+; Wipe traced ability
+	ld a, TRACE
+	ld [wBattleMonTracedAbility], a
+	ld [wEnemyMonTracedAbility], a
 ; Entrance ability check
 	ld de, wBattleMonSpeed
 	ld hl, wEnemyMonSpeed
@@ -2492,6 +2498,9 @@ EnemyPartyMonEntrance:
 	call ResetBattleParticipants
 	call SetEnemyTurn
 	call SpikesDamage
+; Wipe traced ability
+	ld a, TRACE
+	ld [wEnemyMonTracedAbility], a
 ; Entrance ability check
 	ld a, [wEnemyMonSpecies]
 	ld b, 1
