@@ -182,4 +182,6 @@ BattleCommandPointers:
 	dw BattleCommand_Curl
 	dw BattleCommand_StartHail
 	dw BattleCommand_LowKick
+	dw BattleCommand_Snatch
+	dw BattleCommand_CheckSnatch
 	assert_table_length NUM_EFFECT_COMMANDS

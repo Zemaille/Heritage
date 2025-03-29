@@ -182,6 +182,8 @@ ENDM
 	command curl                    ; af
 	command starthail               ; b0
 	command lowkick                 ; b1
+	command snatch                  ; b2
+	command checksnatch             ; b3
 DEF NUM_EFFECT_COMMANDS EQU const_value - 1
 
 	const_def -1, -1

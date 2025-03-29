@@ -529,12 +529,7 @@ CheckEnemyTurn:
 	xor a
 	ld [wNumHits], a
 
-	; Flicker the monster pic unless flying or underground.
-	ld de, ANIM_HIT_CONFUSION
-	ld a, BATTLE_VARS_SUBSTATUS3_OPP
-	call GetBattleVar
-	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
-	call z, PlayFXAnimID
+	call FlickerMon
 
 	ld c, TRUE
 	call DoEnemyDamage
@@ -618,6 +613,15 @@ MoveDisabled:
 	ld hl, DisabledMoveText
 	jmp StdBattleTextbox
 
+FlickerMon:
+	; Flicker the monster pic unless flying or underground.
+	ld de, ANIM_HIT_CONFUSION
+	ld a, BATTLE_VARS_SUBSTATUS3_OPP
+	call GetBattleVar
+	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
+	call z, PlayFXAnimID
+	ret
+
 HitConfusion:
 	ld hl, HurtItselfText
 	call StdBattleTextbox
@@ -632,12 +636,7 @@ HitConfusion:
 	xor a
 	ld [wNumHits], a
 
-	; Flicker the monster pic unless flying or underground.
-	ld de, ANIM_HIT_CONFUSION
-	ld a, BATTLE_VARS_SUBSTATUS3_OPP
-	call GetBattleVar
-	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
-	call z, PlayFXAnimID
+	call FlickerMon
 
 	ld hl, UpdatePlayerHUD
 	call CallBattleCore
@@ -6866,3 +6865,4 @@ CheckMoveInList:
 	ret
 
 INCLUDE "engine/battle/move_effects/low_kick.asm"
+INCLUDE "engine/battle/move_effects/snatch.asm"
