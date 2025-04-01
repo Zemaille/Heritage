@@ -126,6 +126,25 @@ RunBattleAnimScript:
 	jr nz, .find
 
 .not_rollout
+; Slow down Surf's animation.
+	ld a, [wFXAnimID + 1]
+	if HIGH(SURF)
+		cp HIGH(SURF)
+	else
+		or a
+	endc
+	jr nz, .not_surf
+
+	ld a, [wFXAnimID]
+	cp LOW(SURF)
+	jr nz, .not_surf
+	ld a, [wBattleAnimParam]
+	and 1
+	xor 1
+	ld [wBattleAnimParam], a
+	call nz, DelayFrame
+
+.not_surf
 	call DelayFrame
 
 .done
