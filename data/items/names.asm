@@ -87,7 +87,7 @@ ItemNames::
 	li "PNK APRICORN" ; 0055
 	li "BLACKGLASSES" ; 0056
 	li "SLOWPOKETAIL" ; 0057
-	li "PINK BOW"     ; 0058
+	li "Pink Bow"     ; 0058
 	li "STICK"        ; 0059
 	li "SMOKE BALL"   ; 005A
 	li "NEVERMELTICE" ; 005B
@@ -138,7 +138,7 @@ ItemNames::
 	li "NORMAL BOX"   ; 0088
 	li "GORGEOUS BOX" ; 0089
 	li "SUN STONE"    ; 008A
-	li "POLKADOT BOW" ; 008B
+	li "Silk Scarf"   ; 008B
 	li "TERU-SAMA"    ; 008C
 	li "UP-GRADE"     ; 008D
 	li "BERRY"        ; 008E
