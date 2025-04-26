@@ -506,7 +506,8 @@ _ItemfinderNopeText::
 _PoisonFaintText::
 	text_ram wStringBuffer3
 	text_start
-	line "fainted!"
+	line "survived the"
+	cont "poisoning!"
 	prompt
 
 _UseSweetScentText::
@@ -534,7 +535,7 @@ _UseSacredAshText::
 	done
 
 _AnEggCantHoldAnItemText::
-	text "An EGG can't hold"
+	text "An egg can't hold"
 	line "an item."
 	prompt
 
