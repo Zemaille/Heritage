@@ -236,13 +236,13 @@ Options_BattleStyle:
 	bit D_RIGHT_F, a
 	jr z, .NonePressed
 	bit BATTLE_SHIFT, [hl]
-	jr nz, .ToggleShift
+	jr nz, .ToggleSet
 	jr .ToggleSet
 
 .LeftPressed:
 	bit BATTLE_SHIFT, [hl]
 	jr z, .ToggleSet
-	jr .ToggleShift
+	jr .ToggleSet
 
 .NonePressed:
 	bit BATTLE_SHIFT, [hl]
@@ -250,7 +250,7 @@ Options_BattleStyle:
 
 .ToggleShift:
 	res BATTLE_SHIFT, [hl]
-	ld de, .Shift
+	ld de, .Set
 	jr .Display
 
 .ToggleSet:
@@ -263,8 +263,8 @@ Options_BattleStyle:
 	and a
 	ret
 
-.Shift: db "SHIFT@"
-.Set:   db "SET  @"
+.Shift: db "SET@"
+.Set:   db "SET@"
 
 Options_Sound:
 	ld hl, wOptions

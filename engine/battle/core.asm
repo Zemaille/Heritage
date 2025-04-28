@@ -3369,72 +3369,9 @@ LoadEnemyMonToSwitchTo:
 	ret
 
 CheckWhetherToAskSwitch:
-	ld a, [wBattleHasJustStarted]
-	dec a
-	jr z, .return_nc
-	ld a, [wPartyCount]
-	dec a
-	jr z, .return_nc
-	ld a, [wLinkMode]
-	and a
-	jr nz, .return_nc
-	ld a, [wOptions]
-	bit BATTLE_SHIFT, a
-	jr nz, .return_nc
-	ld a, [wCurPartyMon]
-	push af
-	ld a, [wCurBattleMon]
-	ld [wCurPartyMon], a
-	farcall CheckCurPartyMonFainted
-	pop bc
-	ld a, b
-	ld [wCurPartyMon], a
-	jr c, .return_nc
-	scf
 	ret
-
-.return_nc
-	and a
-	ret
-
+	
 OfferSwitch:
-	ld a, [wCurPartyMon]
-	push af
-	farcall Battle_GetTrainerName
-	ld hl, BattleText_EnemyIsAboutToUseWillPlayerChangeMon
-	call StdBattleTextbox
-	lb bc, 1, 7
-	call PlaceYesNoBox
-	ld a, [wMenuCursorY]
-	dec a
-	jr nz, .said_no
-	call SetUpBattlePartyMenu
-	call PickSwitchMonInBattle
-	jr c, .canceled_switch
-	ld a, [wCurBattleMon]
-	ld [wLastPlayerMon], a
-	ld a, [wCurPartyMon]
-	ld [wCurBattleMon], a
-	call ClearPalettes
-	call DelayFrame
-	call _LoadHPBar
-	pop af
-	ld [wCurPartyMon], a
-	xor a
-	ld [wCurEnemyMove], a
-	ld [wCurPlayerMove], a
-	and a
-	ret
-
-.canceled_switch
-	call ClearPalettes
-	call DelayFrame
-	call _LoadHPBar
-
-.said_no
-	pop af
-	ld [wCurPartyMon], a
-	scf
 	ret
 
 ClearEnemyMonBox:
@@ -4805,6 +4742,10 @@ BattleMenu_Pack:
 	ld a, [wLinkMode]
 	and a
 	jr nz, .ItemsCantBeUsed
+
+    ld a, [wBattleType]
+    cp BATTLETYPE_NOITEMS
+    jp z, .ItemsCantBeUsed
 
 	ld a, [wInBattleTowerBattle]
 	and a
