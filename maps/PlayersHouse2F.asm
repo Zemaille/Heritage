@@ -58,7 +58,7 @@ if DEF(_DEBUG)
 	; pokedex
 	setflag ENGINE_POKEDEX
 	; useful items
-	giveitem RARE_CANDY, 99
+	giveitem BIG_NUGGET, 99
 	giveitem MAX_REPEL, 99
 	giveitem MASTER_BALL, 99
 	giveitem BICYCLE

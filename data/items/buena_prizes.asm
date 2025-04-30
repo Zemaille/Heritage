@@ -3,7 +3,7 @@ BuenaPrizeItems:
 	dwb ULTRA_BALL,   2
 	dwb FULL_RESTORE, 2
 	dwb NUGGET,       3
-	dwb RARE_CANDY,   3
+	dwb BIG_NUGGET,   3
 	dwb PROTEIN,      5
 	dwb IRON,         5
 	dwb CARBOS,       5

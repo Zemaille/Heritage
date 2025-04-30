@@ -33,7 +33,7 @@ TrainerSailorErnest:
 	end
 
 OlivineLighthouse5FRareCandy:
-	itemball RARE_CANDY
+	itemball BIG_NUGGET
 
 OlivineLighthouse5FSuperRepel:
 	itemball SUPER_REPEL

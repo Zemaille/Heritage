@@ -35,7 +35,7 @@ ItemDescriptions1:
 	dw CarbosDesc       ; 0018
 	dw LuckyPunchDesc   ; 0019
 	dw CalciumDesc      ; 001A
-	dw RareCandyDesc    ; 001B
+	dw BigNuggetDesc    ; 001B
 	dw XAccuracyDesc    ; 001C
 	dw LeafStoneDesc    ; 001D
 	dw MetalPowderDesc  ; 001E
@@ -193,6 +193,7 @@ ItemDescriptionsKeyItems:
 	dw PassDesc         ; 0113
 	dw SquirtBottleDesc ; 0114
 	dw RainbowWingDesc  ; 0115
+	dw CandyBagDesc
 .IndirectEnd:
 
 ItemDescriptionsBalls:
@@ -326,9 +327,9 @@ CalciumDesc:
 	db   "Raises SPCL.ATK"
 	next "of one #MON.@"
 
-RareCandyDesc:
-	db   "Raises level of a"
-	next "#MON by one.@"
+BigNuggetDesc:
+	db   "Can be sold for"
+	next "a high price.@"
 
 XAccuracyDesc:
 	db   "Raises accuracy."
@@ -870,3 +871,7 @@ MusicMailDesc:
 MirageMailDesc:
 	db   "MEW-print MAIL."
 	next "(HOLD)@"
+
+CandyBagDesc: 
+	db	 "Bag full of Exp."
+	next "Candies.@"

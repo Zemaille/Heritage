@@ -7,7 +7,7 @@ TinTower5F_MapScripts:
 	def_callbacks
 
 TinTower5FRareCandy:
-	itemball RARE_CANDY
+	itemball BIG_NUGGET
 
 TinTower5FHiddenFullRestore:
 	hiddenitem FULL_RESTORE, EVENT_TIN_TOWER_5F_HIDDEN_FULL_RESTORE

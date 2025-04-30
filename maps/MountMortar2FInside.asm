@@ -27,7 +27,7 @@ MountMortar2FInsideMaxPotion:
 	itemball MAX_POTION
 
 MountMortar2FInsideRareCandy:
-	itemball RARE_CANDY
+	itemball BIG_NUGGET
 
 MountMortar2FInsideTMDefenseCurl:
 	itemball TM_DEFENSE_CURL

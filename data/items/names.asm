@@ -1,7 +1,7 @@
 ItemNames::
 	list_start
 	li "BRIGHTPOWDER" ; 0001
-	li "TERU-SAMA"    ; 0002
+	li "Town Map"    ; 0002
 	li "MOON STONE"   ; 0003
 	li "ANTIDOTE"     ; 0004
 	li "BURN HEAL"    ; 0005
@@ -26,7 +26,7 @@ ItemNames::
 	li "CARBOS"       ; 0018
 	li "LUCKY PUNCH"  ; 0019
 	li "CALCIUM"      ; 001A
-	li "RARE CANDY"   ; 001B
+	li "Big Nugget"   ; 001B
 	li "X ACCURACY"   ; 001C
 	li "LEAF STONE"   ; 001D
 	li "METAL POWDER" ; 001E
@@ -185,6 +185,7 @@ KeyItemNames::
 	li "PASS"         ; 0113
 	li "SQUIRTBOTTLE" ; 0114
 	li "RAINBOW WING" ; 0115
+	li "Candy Bag"
 	assert_list_length NUM_KEY_ITEM_POCKET
 
 BallNames::

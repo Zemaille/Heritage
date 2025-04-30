@@ -89,7 +89,7 @@ VioletCityPPUp:
 	itemball PP_UP
 
 VioletCityRareCandy:
-	itemball RARE_CANDY
+	itemball BIG_NUGGET
 
 VioletCityFruitTree:
 	fruittree FRUITTREE_VIOLET_CITY

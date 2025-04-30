@@ -303,7 +303,7 @@ Route27TMSolarbeam:
 	itemball TM_SOLARBEAM
 
 Route27RareCandy:
-	itemball RARE_CANDY
+	itemball BIG_NUGGET
 
 Route27FisherStepLeftTwiceMovement:
 	step LEFT

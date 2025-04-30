@@ -33,7 +33,7 @@ MysteryGiftItems:
 	dw SCOPE_LENS
 	dw HP_UP
 	dw PP_UP
-	dw RARE_CANDY
+	dw BIG_NUGGET
 	dw BLUESKY_MAIL
 	dw MIRAGE_MAIL
 .End

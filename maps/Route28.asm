@@ -7,7 +7,7 @@ Route28Sign:
 	jumptext Route28SignText
 
 Route28HiddenRareCandy:
-	hiddenitem RARE_CANDY, EVENT_ROUTE_28_HIDDEN_RARE_CANDY
+	hiddenitem BIG_NUGGET, EVENT_ROUTE_28_HIDDEN_RARE_CANDY
 
 Route28SignText:
 	text "ROUTE 28"

@@ -32,7 +32,7 @@
 	const CARBOS       ; 0018
 	const LUCKY_PUNCH  ; 0019
 	const CALCIUM      ; 001A
-	const RARE_CANDY   ; 001B
+	const BIG_NUGGET   ; 001B
 	const X_ACCURACY   ; 001C
 	const LEAF_STONE   ; 001D
 	const METAL_POWDER ; 001E
@@ -191,6 +191,7 @@ DEF FIRST_KEY_ITEM EQU const_value
 	const PASS         ; 0113
 	const SQUIRTBOTTLE ; 0114
 	const RAINBOW_WING ; 0115
+	const CANDY_BAG    ; 0116
 DEF NUM_KEY_ITEM_POCKET EQU const_value - FIRST_KEY_ITEM
 assert NUM_KEY_ITEM_POCKET <= $ff
 
