@@ -114,6 +114,7 @@ DragonShrineTakeTestScript:
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
 	iftrue .Question1
 .PassedTheTest:
+	loadmem wLevelCap, 60
 	writetext DragonShrinePassedTestText
 	waitbutton
 	closetext
