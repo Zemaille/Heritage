@@ -260,6 +260,7 @@ MoveDescriptionsGen2:
 	dw RockSmashDescription
 	dw WhirlpoolDescription
 	dw BeatUpDescription
+	dw HailDescription
 .IndirectEnd::
 
 InvalidMoveDescription:
@@ -1268,3 +1269,7 @@ WhirlpoolDescription:
 BeatUpDescription:
 	db   "Party #MON join"
 	next "in the attack.@"
+
+HailDescription:
+	db   "Inflicts damage"
+	next "every turn.@"

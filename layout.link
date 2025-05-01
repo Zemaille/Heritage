@@ -41,6 +41,7 @@ ROMX $03
 	"bank3"
 	"VWF"
 	"mobile5C"
+	"Battle Weather Images"
 ROMX $04
 	"bank4"
 	"Tileset Data 11"
@@ -130,7 +131,6 @@ ROMX $24
 	"bank24"
 ROMX $25
 	"Map Headers"
-	"Events"
 ROMX $26
 	"Map Scripts 11"
 ROMX $27
@@ -319,7 +319,7 @@ ROMX $77
 ROMX $78
 	"Tileset Data 8"
 ROMX $79
-	"Battle Weather Images"
+	"Events"
 ROMX $7b
 	"Battle Tower Text"
 ROMX $7c
