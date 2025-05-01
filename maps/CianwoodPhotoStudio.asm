@@ -6,44 +6,82 @@ CianwoodPhotoStudio_MapScripts:
 
 	def_callbacks
 
-CianwoodPhotoStudioFishingGuruScript:
+SwarmTrackerScript:
 	faceplayer
 	opentext
-	writetext CianwoodPhotoStudioFishingGuruText_Question
-	yesorno
-	iffalse .Refused
-	writetext CianwoodPhotoStudioFishingGuruText_Yes
-	waitbutton
-	special PhotoStudio
+	checkflag ENGINE_SWARM
+	iftrue .skiprandomswarm
+	random 3
+	ifequal 0, .dunsparce
+	ifequal 1, .yanma
+       ifequal 2, .qwilfish
+
+.dunsparce
+	setflag ENGINE_SWARM
+	swarm DARK_CAVE_VIOLET_ENTRANCE
+	writetext SwarmDunsparceText
 	waitbutton
 	closetext
 	end
 
-.Refused:
-	writetext CianwoodPhotoStudioFishingGuruText_No
+.yanma
+	setflag ENGINE_SWARM
+	swarm ROUTE_35
+	writetext SwarmYanmaText
 	waitbutton
 	closetext
 	end
 
-CianwoodPhotoStudioFishingGuruText_Question:
-	text "You have magnifi-"
-	line "cent #MON with"
-	cont "you."
+.qwilfish
+	setflag ENGINE_SWARM
+	swarm ROUTE_32
+	writetext SwarmQwilfishText
+	waitbutton
+	closetext
+	end
 
-	para "How about a photo"
-	line "for a souvenir?"
+.skiprandomswarm
+	writetext SkipSwarmText
+	waitbutton
+	closetext
+	end
+
+SwarmDunsparceText:
+	text "Let me see…"
+	line "What did the news"
+	cont "say?"
+
+	para "Oh yes! There's a"
+	line "swarm of DUNSPARCE"
+	cont "at DARK CAVE."
+	done
+	
+SwarmYanmaText:
+	text "Let me see…"
+	line "What did the news"
+	cont "say?"
+
+	para "Oh yes! There's a"
+	line "swarm of YANMA"
+	cont "on ROUTE 35."
+	done
+	
+SwarmQwilfishText:
+	text "Let me see…"
+	line "What did the news"
+	cont "say?"
+
+	para "Oh yes! There's a"
+	line "swarm of QWILFISH"
+	cont "on ROUTE 32."
 	done
 
-CianwoodPhotoStudioFishingGuruText_Yes:
-	text "OK! Big smile now!"
-	done
+SkipSwarmText:
+	text "Often #MON"
+	line "of unusual colors"
 
-CianwoodPhotoStudioFishingGuruText_No:
-	text "Oh, that's too"
-	line "bad. I thought it"
-
-	para "would be a great"
-	line "memento…"
+	para "are reported in"
+	line "swarms."
 	done
 
 CianwoodPhotoStudio_MapEvents:
@@ -58,4 +96,4 @@ CianwoodPhotoStudio_MapEvents:
 	def_bg_events
 
 	def_object_events
-	object_event  2,  3, SPRITE_FISHING_GURU, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CianwoodPhotoStudioFishingGuruScript, -1
+	object_event  2,  3, SPRITE_FISHING_GURU, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, SwarmTrackerScript, -1

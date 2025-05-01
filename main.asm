@@ -522,6 +522,11 @@ INCLUDE "engine/link/link.asm"
 INCLUDE "engine/battle/link_result.asm"
 
 
+SECTION "Swarm Overhaul", ROMX
+
+INCLUDE "engine/battle/swarm_shiny.asm"
+
+
 SECTION "mobile5C", ROMX
 
 INCLUDE "mobile/mobile_5c.asm"
