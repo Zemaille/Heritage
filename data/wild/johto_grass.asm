@@ -1,5 +1,16 @@
 ; Johto Pokémon in grass
 
+;	def_grass_wildmons MAP_NAME
+;	db X percent, X percent, X percent ; encounter rates: morn/day/nite Chance when taking a step
+;	; morn 
+;	dbw Y, POKéMON - 30%               ; Y is base level, can be +4
+;	dbw Y, POKéMON - 30%               ; +0 35%
+;	dbw Y, POKéMON - 20%               ; +1 30%
+;	dbw Y, POKéMON - 10%               ; +2 20%
+;	dbw Y, POKéMON -  5%               ; +3 10%
+;	dbw Y, POKéMON -  4%               ; +4  5%
+;	dbw Y, POKéMON -  1%
+
 JohtoGrassWildMons:
 
 	def_grass_wildmons SPROUT_TOWER_2F
