@@ -61,6 +61,7 @@ if DEF(_DEBUG)
 	giveitem BIG_NUGGET, 99
 	giveitem MAX_REPEL, 99
 	giveitem MASTER_BALL, 99
+	giveitem TEST_BERRY, 2
 	giveitem BICYCLE
 	giveitem GOOD_ROD
 	giveitem THUNDERSTONE, 10

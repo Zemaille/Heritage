@@ -44,7 +44,6 @@ ROMX $03
 	"Battle Weather Images"
 ROMX $04
 	"bank4"
-	"Tileset Data 11"
 ROMX $05
 	"bank5"
 	"Load Map Part"
@@ -321,6 +320,7 @@ ROMX $78
 ROMX $79
 	"Events"
 ROMX $7b
+	"Tileset Data 11"
 	"Battle Tower Text"
 ROMX $7c
 	"Battle Tower Trainer Data"
