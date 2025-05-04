@@ -2653,6 +2653,8 @@ PlayerAttackDamage:
 	sla c
 	rl b
 
+	call SandstormSpDefBoost
+
 .specialcrit
 	ld hl, wBattleMonSpclAtk
 	call CheckDamageStatsCritical
@@ -2918,6 +2920,8 @@ EnemyAttackDamage:
 	jr z, .specialcrit
 	sla c
 	rl b
+
+	call SandstormSpDefBoost
 
 .specialcrit
 	ld hl, wEnemyMonSpclAtk
@@ -6764,4 +6768,34 @@ CheckMoveInList:
 	call IsInWordArray
 	pop de
 	pop bc
+	ret
+
+SandstormSpDefBoost: 
+; First, check if Sandstorm is active.
+	ld a, [wBattleWeather]
+	cp WEATHER_SANDSTORM
+	ret nz
+
+; Then, check the opponent's types.
+	ld hl, wEnemyMonType1
+	ldh a, [hBattleTurn]
+	and a
+	jr z, .ok
+	ld hl, wBattleMonType1
+.ok
+	ld a, [hli]
+	cp ROCK
+	jr z, .start_boost
+	ld a, [hl]
+	cp ROCK
+	ret nz
+
+.start_boost
+	ld h, b
+	ld l, c
+	srl b
+	rr c
+	add hl, bc
+	ld b, h
+	ld c, l
 	ret
