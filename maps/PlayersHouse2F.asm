@@ -139,10 +139,14 @@ if DEF(_DEBUG)
 	; post-e4
 	setflag ENGINE_CREDITS_SKIP
 	; good party
-	givepoke MEWTWO, 100, BRIGHTPOWDER
+	givepoke TYRANITAR, 100, LEFTOVERS
 	; hm slaves
-	givepoke MEW, 100, LEFTOVERS
-	givepoke LANTURN, 100, LEFTOVERS
+	givepoke MANTINE, 100, LEFTOVERS
+	givepoke DUNSPARCE, 100, LEFTOVERS
+	givepokemove EARTHQUAKE,    wPartyMon1, 0
+	givepokemove ROCK_SLIDE,    wPartyMon1, 1
+	givepokemove PURSUIT, 	    wPartyMon1, 2
+	givepokemove FLAMETHROWER, 	wPartyMon1, 3
 	givepokemove FLY,        wPartyMon2, 0
 	givepokemove SURF,       wPartyMon2, 1
 	givepokemove STRENGTH,   wPartyMon2, 2

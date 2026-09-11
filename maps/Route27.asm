@@ -478,7 +478,7 @@ Route27_MapEvents:
 	coord_event 19, 10, SCENE_ROUTE27_FIRST_STEP_INTO_KANTO, FirstStepIntoKantoRightScene
 
 	def_bg_events
-	bg_event 25,  7, BGEVENT_READ, TohjoFallsSign
+	bg_event 25,  9, BGEVENT_READ, TohjoFallsSign
 
 	def_object_events
 	object_event 48,  7, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainermBlake, -1
