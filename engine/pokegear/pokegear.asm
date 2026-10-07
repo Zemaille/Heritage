@@ -698,13 +698,13 @@ PokegearMap_UpdateCursorPosition:
 TownMap_GetKantoLandmarkLimits:
 	ld a, [wStatusFlags]
 	bit STATUSFLAGS_HALL_OF_FAME_F, a
-	jr z, .not_hof
+;	jr z, .not_hof
 	lb de, KANTO_LANDMARK_LAST, KANTO_LANDMARK
 	ret
 
-.not_hof
-	lb de, LANDMARK_ROUTE_28, LANDMARK_VICTORY_ROAD
-	ret
+;.not_hof
+;	lb de, LANDMARK_ROUTE_28, LANDMARK_VICTORY_ROAD
+;	ret
 
 PokegearRadio_Init:
 	call InitPokegearTilemap

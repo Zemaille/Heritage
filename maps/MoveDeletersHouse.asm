@@ -21,8 +21,8 @@ MoveDeletersHouse_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  2,  7, BLACKTHORN_CITY, 6
-	warp_event  3,  7, BLACKTHORN_CITY, 6
+	warp_event  3,  7, MAHOGANY_TOWN, 6
+	warp_event  4,  7, MAHOGANY_TOWN, 6
 
 	def_coord_events
 

@@ -48,8 +48,13 @@ ENDM
 	map_const ROUTE_39_BARN,                                4,  4 ; 10
 	map_const ROUTE_39_FARMHOUSE,                           4,  4 ; 11
 	map_const ROUTE_38,                                    20,  9 ; 12
-	map_const ROUTE_39,                                    10, 18 ; 13
+	map_const ROUTE_39,                                    10, 28 ; 13
 	map_const OLIVINE_CITY,                                20, 18 ; 14
+	map_const SALTMARSHSE,                                 15, 13 ; 15
+	map_const SALTMARSHSW,                                 15, 13 ; 16
+	map_const SALTMARSHNE,                                 15, 13 ; 17
+	map_const SALTMARSHNW,                                 15, 13 ; 18
+	map_const SALTMARSHGATE, 							    5,  4 ; 19
 	endgroup
 
 	newgroup MAHOGANY                                             ;  2
@@ -59,7 +64,7 @@ ENDM
 	map_const ROUTE_42_ECRUTEAK_GATE,                       5,  4 ;  4
 	map_const ROUTE_42,                                    30,  9 ;  5
 	map_const ROUTE_44,                                    30,  9 ;  6
-	map_const MAHOGANY_TOWN,                               10,  9 ;  7
+	map_const MAHOGANY_TOWN,                               15,  9 ;  7
 	endgroup
 
 	newgroup DUNGEONS                                             ;  3
@@ -154,6 +159,7 @@ ENDM
 	map_const SAFARI_ZONE_FUCHSIA_GATE_BETA,                5,  4 ; 89
 	map_const SAFARI_ZONE_BETA,                            10, 18 ; 90
 	map_const VICTORY_ROAD,                                10, 36 ; 91
+	map_const ILEX_FOREST_HEART,                           25, 13 ; 92
 	endgroup
 
 	newgroup ECRUTEAK                                             ;  4
@@ -219,7 +225,7 @@ ENDM
 	map_const KURTS_HOUSE,                                  8,  4 ;  4
 	map_const AZALEA_GYM,                                   5,  8 ;  5
 	map_const ROUTE_33,                                    10,  9 ;  6
-	map_const AZALEA_TOWN,                                 20,  9 ;  7
+	map_const AZALEA_TOWN,                                 21,  9 ;  7
 	endgroup
 
 	newgroup LAKE_OF_RAGE                                         ;  9
@@ -378,6 +384,7 @@ ENDM
 	map_const SILVER_CAVE_OUTSIDE,                         20, 18 ;  2
 	map_const SILVER_CAVE_POKECENTER_1F,                    5,  4 ;  3
 	map_const ROUTE_28_STEEL_WING_HOUSE,                    4,  4 ;  4
+	map_const ROUTE_47,                                    20, 40 ;  5
 	endgroup
 
 	newgroup CABLE_CLUB                                           ; 20
@@ -434,6 +441,10 @@ ENDM
 	map_const BATTLE_TOWER_HALLWAY,                        11,  2 ; 14
 	map_const ROUTE_40_BATTLE_TOWER_GATE,                   5,  4 ; 15
 	map_const BATTLE_TOWER_OUTSIDE,                        10, 14 ; 16
+	map_const BATTLE_TOWER_TUNNEL,							8, 12 ; 17
+	map_const CIANWOOD_CAVE_1F,                             5,  9 ; 18
+	map_const CIANWOOD_CAVE_2F,                            10, 18 ; 19
+	map_const CIANWOOD_CAVE_3F,                            10, 18 ; 20
 	endgroup
 
 	newgroup VIRIDIAN                                             ; 23

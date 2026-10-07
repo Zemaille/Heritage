@@ -152,3 +152,5 @@
 	tilecoll FLOOR, FLOOR, FLOOR, WALL ; 97
 	tilecoll WALL, FLOOR, FLOOR, FLOOR ; 98
 	tilecoll HEADBUTT_TREE, WALL, HEADBUTT_TREE, WALL ; 99
+	tilecoll WALL, WALL, WALL, WALL ; 9a
+	tilecoll WALL, WALL, WALL, WALL ; 9b

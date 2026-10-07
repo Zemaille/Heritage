@@ -142,7 +142,8 @@ ENDM
 	connection south, Route45, ROUTE_45, 0
 	connection west, Route44, ROUTE_44, 9
 
-	map_attributes SilverCaveOutside, SILVER_CAVE_OUTSIDE, $2c, EAST
+	map_attributes SilverCaveOutside, SILVER_CAVE_OUTSIDE, $71, SOUTH | EAST
+	connection south, Route47, ROUTE_47, 0
 	connection east, Route28, ROUTE_28, 9
 
 	map_attributes Route26, ROUTE_26, $05, WEST
@@ -152,7 +153,7 @@ ENDM
 	connection west, NewBarkTown, NEW_BARK_TOWN, 0
 	connection east, Route26, ROUTE_26, -45
 
-	map_attributes Route28, ROUTE_28, $2c, WEST
+	map_attributes Route28, ROUTE_28, $71, WEST
 	connection west, SilverCaveOutside, SILVER_CAVE_OUTSIDE, -9
 
 	map_attributes Route29, ROUTE_29, $05, NORTH | WEST | EAST
@@ -221,9 +222,14 @@ ENDM
 	connection west, MahoganyTown, MAHOGANY_TOWN, 0
 	connection east, BlackthornCity, BLACKTHORN_CITY, -9
 
-	map_attributes Route45, ROUTE_45, $71, NORTH | WEST
+	map_attributes Route45, ROUTE_45, $71, NORTH | WEST | EAST
 	connection north, BlackthornCity, BLACKTHORN_CITY, 0
 	connection west, Route46, ROUTE_46, 36
+	connection east, Route47, ROUTE_47, 5
+
+	map_attributes Route47, ROUTE_47, $71, NORTH | WEST
+	connection north, SilverCaveOutside, SILVER_CAVE_OUTSIDE, 0
+	connection west,  Route45, ROUTE_45, -5
 
 	map_attributes Route46, ROUTE_46, $05, SOUTH | EAST
 	connection south, Route29, ROUTE_29, -10
@@ -374,6 +380,22 @@ ENDM
 	map_attributes Route10South, ROUTE_10_SOUTH, $2c, NORTH | SOUTH
 	connection north, Route10North, ROUTE_10_NORTH, 0
 	connection south, LavenderTown, LAVENDER_TOWN, 0
+
+	map_attributes SaltmarshSE, SALTMARSHSE, $7c, NORTH | WEST
+	connection north, SaltmarshNE, SALTMARSHNE, 0
+	connection west, SaltmarshSW, SALTMARSHSW, 0
+
+	map_attributes SaltmarshSW, SALTMARSHSW, $7c, NORTH | EAST
+	connection north, SaltmarshNW, SALTMARSHNW, 0
+	connection east, SaltmarshSE, SALTMARSHSE, 0
+
+	map_attributes SaltmarshNE, SALTMARSHNE, $7c, SOUTH | WEST
+	connection south, SaltmarshSE, SALTMARSHSE, 0
+	connection west, SaltmarshNW, SALTMARSHNW, 0
+
+	map_attributes SaltmarshNW, SALTMARSHNW, $7c, SOUTH | EAST
+	connection south, SaltmarshSW, SALTMARSHSW, 0
+	connection east, SaltmarshNE, SALTMARSHNE, 0
 
 	map_attributes Route23, ROUTE_23, $0f, 0
 	map_attributes SproutTower1F, SPROUT_TOWER_1F, $00, 0
@@ -694,3 +716,10 @@ ENDM
 	map_attributes MrPokemonsHouse, MR_POKEMONS_HOUSE, $00, 0
 	map_attributes Route31VioletGate, ROUTE_31_VIOLET_GATE, $00, 0
 	map_attributes JohtoPokecenter2F, JOHTO_POKECENTER_2F, $00, 0
+	map_attributes BattleTowerTunnel, BATTLE_TOWER_TUNNEL, $09, 0
+	map_attributes SaltMarshGate, SALTMARSHGATE, $00, 0
+	map_attributes CianwoodCave1F, CIANWOOD_CAVE_1F, $09, 0
+	map_attributes CianwoodCave2F, CIANWOOD_CAVE_2F, $09, 0
+	map_attributes CianwoodCave3F, CIANWOOD_CAVE_3F, $09, 0
+	map_attributes IlexForestHeart, ILEX_FOREST_HEART, $00, 0
+

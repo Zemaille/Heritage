@@ -483,5 +483,16 @@ SECTION "Map Scripts 25", ROMX
 INCLUDE "maps/SilverCaveOutside.asm"
 INCLUDE "maps/Route10North.asm"
 INCLUDE "maps/JohtoPokecenter2F.asm"
+INCLUDE "maps/Route47.asm"
+INCLUDE "maps/SaltMarshSE.asm"
+INCLUDE "maps/SaltMarshSW.asm"
+INCLUDE "maps/SaltMarshNE.asm"
+INCLUDE "maps/SaltMarshNW.asm"
+INCLUDE "maps/BattleTowerTunnel.asm"
+INCLUDE "maps/SaltMarshGate.asm"
+INCLUDE "maps/CianwoodCave1F.asm"
+INCLUDE "maps/CianwoodCave2F.asm"
+INCLUDE "maps/CianwoodCave3F.asm"
+INCLUDE "maps/IlexForestHeart.asm"
 
 ENDSECTION
