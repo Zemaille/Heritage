@@ -130,6 +130,7 @@ DEF JOHTO_FLYPOINT EQU const_value
 	const FLY_LAKE_OF_RAGE
 	const FLY_BLACKTHORN
 	const FLY_MT_SILVER
+	const FLY_INDIGO
 ; kanto
 DEF KANTO_FLYPOINT EQU const_value
 	const FLY_PALLET
@@ -143,7 +144,6 @@ DEF KANTO_FLYPOINT EQU const_value
 	const FLY_SAFFRON
 	const FLY_FUCHSIA
 	const FLY_CINNABAR
-	const FLY_INDIGO
 DEF NUM_FLYPOINTS EQU const_value
 
 DEF MAX_OUTDOOR_SPRITES EQU 23 ; see engine/overworld/overworld.asm

@@ -4,10 +4,12 @@
 
 DEF JOHTO_LANDMARK EQU const_value
 	const LANDMARK_NEW_BARK_TOWN     ; 01
+	const LANDMARK_ELMS_LAB
 	const LANDMARK_ROUTE_29          ; 02
 	const LANDMARK_CHERRYGROVE_CITY  ; 03
 	const LANDMARK_ROUTE_30          ; 04
 	const LANDMARK_ROUTE_31          ; 05
+	const LANDMARK_DARK_CAVE
 	const LANDMARK_VIOLET_CITY       ; 06
 	const LANDMARK_SPROUT_TOWER      ; 07
 	const LANDMARK_ROUTE_32          ; 08
@@ -28,14 +30,17 @@ DEF JOHTO_LANDMARK EQU const_value
 	const LANDMARK_TIN_TOWER         ; 17
 	const LANDMARK_BURNED_TOWER      ; 18
 	const LANDMARK_ROUTE_38          ; 19
+	const LANDMARK_FROZEN_TUNNEL
+	const LANDMARK_BATTLE_TOWER
 	const LANDMARK_ROUTE_39          ; 1a
 	const LANDMARK_OLIVINE_CITY      ; 1b
 	const LANDMARK_LIGHTHOUSE        ; 1c
-	const LANDMARK_BATTLE_TOWER      ; 1d
 	const LANDMARK_ROUTE_40          ; 1e
+	const LANDMARK_SALT_MARSH
 	const LANDMARK_WHIRL_ISLANDS     ; 1f
 	const LANDMARK_ROUTE_41          ; 20
 	const LANDMARK_CIANWOOD_CITY     ; 21
+	const LANDMARK_CIANWOOD_CAVE
 	const LANDMARK_ROUTE_42          ; 22
 	const LANDMARK_MT_MORTAR         ; 23
 	const LANDMARK_MAHOGANY_TOWN     ; 24
@@ -46,9 +51,15 @@ DEF JOHTO_LANDMARK EQU const_value
 	const LANDMARK_BLACKTHORN_CITY   ; 29
 	const LANDMARK_DRAGONS_DEN       ; 2a
 	const LANDMARK_ROUTE_45          ; 2b
-	const LANDMARK_DARK_CAVE         ; 2c
 	const LANDMARK_ROUTE_46          ; 2d
-	const LANDMARK_SILVER_CAVE       ; 2e
+	const LANDMARK_ROUTE_47
+	const LANDMARK_MT_SILVER
+	const LANDMARK_SILVER_CAVE
+	const LANDMARK_VICTORY_ROAD
+	const LANDMARK_INDIGO_PLATEAU
+	const LANDMARK_ROUTE_26
+	const LANDMARK_TOHJO_FALLS
+	const LANDMARK_ROUTE_27
 DEF JOHTO_LANDMARK_LAST EQU const_value - 1
 
 DEF KANTO_LANDMARK EQU const_value
@@ -93,13 +104,9 @@ DEF KANTO_LANDMARK EQU const_value
 	const LANDMARK_CINNABAR_ISLAND   ; 55
 	const LANDMARK_ROUTE_21          ; 56
 	const LANDMARK_ROUTE_22          ; 57
-	const LANDMARK_VICTORY_ROAD      ; 58
+
 	const LANDMARK_ROUTE_23          ; 59
-	const LANDMARK_INDIGO_PLATEAU    ; 5a
-	const LANDMARK_ROUTE_26          ; 5b
-	const LANDMARK_ROUTE_27          ; 5c
-	const LANDMARK_TOHJO_FALLS       ; 5d
-	const LANDMARK_ROUTE_28          ; 5e
+
 DEF KANTO_LANDMARK_LAST EQU const_value - 1
 
 DEF OTHER_LANDMARK EQU const_value

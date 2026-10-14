@@ -4,6 +4,7 @@
 	const RUINSOFALPHOUTSIDE_FISHER
 	const RUINSOFALPHOUTSIDE_YOUNGSTER2
 	const RUINSOFALPHOUTSIDE_YOUNGSTER3
+	const RUINSOFALPHOUTSIDE_BOULDER
 
 RuinsOfAlphOutside_MapScripts:
 	def_scene_scripts
@@ -236,6 +237,9 @@ RuinsOfAlphOutsideYoungster2Text:
 	line "message!"
 	done
 
+RuinsOfAlphOutsideBoulder:
+	jumpstd StrengthBoulderScript
+
 RuinsOfAlphOutside_MapEvents:
 	db 0, 0 ; filler
 
@@ -248,7 +252,7 @@ RuinsOfAlphOutside_MapEvents:
 	warp_event 17, 11, RUINS_OF_ALPH_RESEARCH_CENTER, 1
 	warp_event  6, 19, UNION_CAVE_B1F, 1
 	warp_event  6, 27, UNION_CAVE_B1F, 2
-	warp_event  7,  5, ROUTE_36_RUINS_OF_ALPH_GATE, 3
+	warp_event  0,  0, ROUTE_36_RUINS_OF_ALPH_GATE, 3
 	warp_event 13, 20, ROUTE_32_RUINS_OF_ALPH_GATE, 1
 	warp_event 13, 21, ROUTE_32_RUINS_OF_ALPH_GATE, 2
 
@@ -267,3 +271,4 @@ RuinsOfAlphOutside_MapEvents:
 	object_event 13, 17, SPRITE_FISHER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, RuinsOfAlphOutsideFisherScript, EVENT_RUINS_OF_ALPH_OUTSIDE_TOURIST_FISHER
 	object_event 14, 11, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, RuinsOfAlphOutsideYoungster1Script, EVENT_RUINS_OF_ALPH_OUTSIDE_TOURIST_YOUNGSTERS
 	object_event 12,  8, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, RuinsOfAlphOutsideYoungster2Script, EVENT_RUINS_OF_ALPH_OUTSIDE_TOURIST_YOUNGSTERS
+	object_event  9, 21, SPRITE_BOULDER, SPRITEMOVEDATA_STRENGTH_BOULDER, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, RuinsOfAlphOutsideBoulder, -1

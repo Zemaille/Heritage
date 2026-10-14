@@ -150,19 +150,23 @@ if DEF(_DEBUG)
 	setflag ENGINE_UNLOCKED_UNOWNS_EXCLAMATION_QUESTION
 	; post-e4
 	setflag ENGINE_CREDITS_SKIP
-	; ; good party
-	; givepoke MEWTWO, 100, BRIGHTPOWDER
-	; ; hm slaves
-	; givepoke MEW, 100, LEFTOVERS
-	; givepoke LANTURN, 100, LEFTOVERS
-	; givepokemove FLY,        wPartyMon2, 0
-	; givepokemove SURF,       wPartyMon2, 1
-	; givepokemove STRENGTH,   wPartyMon2, 2
-	; givepokemove CUT,        wPartyMon2, 3
-	; givepokemove FLASH,      wPartyMon3, 0
-	; givepokemove ROCK_SMASH, wPartyMon3, 1
-	; givepokemove HEADBUTT,   wPartyMon3, 2
-	; givepokemove WATERFALL,  wPartyMon3, 3
+	; good party
+	givepoke TYRANITAR, 100, LEFTOVERS
+	; hm slaves
+	givepoke MANTINE, 100, LEFTOVERS
+	givepoke DUNSPARCE, 100, LEFTOVERS
+	givepokemove EARTHQUAKE,    wPartyMon1, 0
+	givepokemove ROCK_SLIDE,    wPartyMon1, 1
+	givepokemove PURSUIT, 	    wPartyMon1, 2
+	givepokemove FLAMETHROWER, 	wPartyMon1, 3
+	givepokemove FLY,        wPartyMon2, 0
+	givepokemove SURF,       wPartyMon2, 1
+	givepokemove STRENGTH,   wPartyMon2, 2
+	givepokemove CUT,        wPartyMon2, 3
+	givepokemove FLASH,      wPartyMon3, 0
+	givepokemove ROCK_SMASH, wPartyMon3, 1
+	givepokemove HEADBUTT,   wPartyMon3, 2
+	givepokemove WATERFALL,  wPartyMon3, 3
 	; misc pokemon for testing
 	givepoke GENGAR, 50
 	givepokemove TRANSFORM,  wPartyMon1, 0
