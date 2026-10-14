@@ -47,9 +47,8 @@ BattleCommand_FutureSight:
 	jr nz, .failed
 	ld [hl], 4
 	call BattleCommand_LowerSub
-	call BattleCommand_MoveDelay
 	ld hl, ForesawAttackText
-	call StdBattleTextbox
+	call DelayedMoveText
 	call BattleCommand_RaiseSub
 	ld de, wPlayerFutureSightDamage
 	ldh a, [hBattleTurn]
@@ -69,8 +68,6 @@ BattleCommand_FutureSight:
 	jmp EndMoveEffect
 
 .failed
-	pop bc
 	call ResetDamage
-	call AnimateFailedMove
-	call PrintButItFailed
+	call BattleEffect_ButItFailed
 	jmp EndMoveEffect

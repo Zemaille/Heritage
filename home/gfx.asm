@@ -116,10 +116,10 @@ LoadFontsExtra::
 
 DecompressRequest2bpp::
 ; Load compressed 2bpp at b:hl to occupy c tiles of de.
-	ld a, [rSVBK]
+	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wDecompressScratch)
-	ld [rSVBK], a
+	ldh [rSVBK], a
 
 	push de
 	push bc
@@ -135,7 +135,7 @@ DecompressRequest2bpp::
 	call Request2bpp
 
 	pop af
-	ld [rSVBK], a
+	ldh [rSVBK], a
 	ret
 
 FarCopyBytes::

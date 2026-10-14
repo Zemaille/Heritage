@@ -391,6 +391,7 @@ wEnemySubStatus3:: db
 wEnemySubStatus4:: db
 wEnemySubStatus5:: db
 
+wPlayerAbility:: db
 wPlayerRolloutCount:: db
 wPlayerConfuseCount:: db
 wPlayerToxicCount:: db
@@ -400,6 +401,7 @@ wPlayerPerishCount:: db
 wPlayerFuryCutterCount:: db
 wPlayerProtectCount:: db
 
+wEnemyAbility:: db
 wEnemyRolloutCount:: db
 wEnemyConfuseCount:: db
 wEnemyToxicCount:: db
@@ -462,7 +464,7 @@ wEnemyEvaLevel::  db
 
 wEnemyTurnsTaken::  db
 wPlayerTurnsTaken:: db
-	ds 1
+wTotalBattleTurns::      db
 
 wPlayerSubstituteHP:: db
 wEnemySubstituteHP::  db
@@ -484,8 +486,7 @@ wCurEnemyMoveNum:: db
 wEnemyHPAtTimeOfPlayerSwitch:: dw
 wPayDayMoney:: ds 3
 
-	ds 1
-wEnemyBackupDVs:: dw ; used when enemy is transformed
+wEnemyBackupIVsAndPersonality:: ds 6 ; used when enemy is transformed
 wAlreadyDisobeyed:: db
 
 wDisabledMove:: db
@@ -521,14 +522,14 @@ wEnemyScreens::
 wPlayerSafeguardCount:: db
 wPlayerLightScreenCount:: db
 wPlayerReflectCount:: db
-	ds 1
+
 
 wEnemySafeguardCount:: db
 wEnemyLightScreenCount:: db
 wEnemyReflectCount:: db
-	ds 1
 
-	ds 1
+
+wTempIVs:: ds 4
 
 wBattleWeather::
 ; 00 normal
@@ -1630,14 +1631,15 @@ SECTION UNION "Miscellaneous WRAM 1", WRAMX
 ; poke seer
 wSeerAction:: db
 wSeerNickname:: ds MON_NAME_LENGTH
-wSeerCaughtLocation:: ds 17
+wSeerCaughtLocationString:: ds 17
 wSeerTimeOfDay:: ds NAME_LENGTH
 wSeerOT:: ds NAME_LENGTH
 wSeerOTGrammar:: db
 wSeerCaughtLevelString:: ds 4
+wSeerCaughtTime:: db
+wSeerCaughtGender::
 wSeerCaughtLevel:: db
-wSeerCaughtData:: db
-wSeerCaughtGender:: db
+wSeerCaughtLocation:: db
 
 
 SECTION UNION "Miscellaneous WRAM 1", WRAMX
@@ -2024,12 +2026,14 @@ wItemsPocketCursor::    db
 wKeyItemsPocketCursor:: db
 wBallsPocketCursor::    db
 wTMHMPocketCursor::     db
+wBerryPocketCursor::    db
 
 wPCItemsScrollPosition::        db
 wItemsPocketScrollPosition::    db
 wKeyItemsPocketScrollPosition:: db
 wBallsPocketScrollPosition::    db
 wTMHMPocketScrollPosition::     db
+wBerryPocketScrollPosition::    db
 
 wSwitchMon::
 wSwitchItem::
@@ -2095,6 +2099,7 @@ wMartItemID::
 	db
 
 wCurPartySpecies:: db
+wCurPartyForm:: db
 
 wCurPartyMon::
 ; index of mon's party location (0-5)
@@ -2354,6 +2359,7 @@ wListMovesLineSpacing:: db
 wSwitchMonTo:: db
 wSwitchMonFrom:: db
 	ds 4
+wPokerusBuffer::
 wCurEnemyItem:: db
 
 NEXTU
@@ -2412,7 +2418,7 @@ wUnownLetter:: db
 
 wMoveSelectionMenuType:: db
 
-; corresponds to the data/pokemon/base_stats/*.asm contents
+; corresponds to the data/pokemon/base_stats/*/*.asm contents
 wCurBaseData::
 wBaseSpecies:: db
 wBaseStats::
@@ -2436,8 +2442,9 @@ wBaseItem2:: dw
 wBaseGender:: db
 wBaseEggSteps:: db
 wBasePicSize:: db
-wBaseUnusedFrontpic:: dw
-wBaseUnusedBackpic:: dw
+wBaseAbility1:: db
+wBaseAbility2:: db
+wBasePadding:: dw
 wBaseGrowthRate:: db
 wBaseEggGroups:: db
 wBaseTMHM:: flag_array NUM_TM_HM_TUTOR
@@ -2456,7 +2463,7 @@ wWaterEncounterRate:: db
 wListMoves_MoveIndicesBuffer:: ds NUM_MOVES
 wPutativeTMHMMove:: db
 wInitListType:: db
-wBattleHasJustStarted:: db
+ds 1
 
 wNamedObjectIndex::
 wTextDecimalByte::
@@ -2529,6 +2536,7 @@ NEXTU
 wDudeNumItems:: db
 wDudeItems:: ds 2 * 4 + 1
 
+wDudeNumBerries::
 wDudeNumKeyItems:: db
 wDudeKeyItems:: ds 18 + 1
 
@@ -2735,6 +2743,9 @@ wKeyItems:: ds MAX_KEY_ITEMS + 1
 wNumBalls:: db
 wBalls:: ds MAX_BALLS * 2 + 1
 
+wNumBerries:: db
+wBerries:: ds MAX_BERRIES * 2 + 1
+
 wNumPCItems:: db
 wPCItems:: ds MAX_PC_ITEMS * 3 + 1
 
@@ -2881,7 +2892,8 @@ wBikeFlags::
 ; bit 1: always on bike
 ; bit 2: downhill
 	db
-	ds 1 ; cleared along with wBikeFlags by ResetBikeFlags
+
+wWildBattlePanic:: db
 
 wCurMapSceneScriptPointer:: dw
 
@@ -2930,7 +2942,6 @@ wBugContestStartTime:: ds 4 ; day, hour, min, sec
 wUnusedTwoDayTimerOn:: db
 wUnusedTwoDayTimer:: db
 wUnusedTwoDayTimerStartDate:: db
-
 wMobileOrCable_LastSelection:: db
 	ds 9
 wBuenasPassword:: db

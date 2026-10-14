@@ -53,9 +53,9 @@ DragonsDenB1F_ClairScene:
 	opentext
 	writetext ClairText_GiveDragonbreathDragonDen
 	promptbutton
-	giveitem TM_DRAGONBREATH
+	giveitem TM_THUNDERBOLT ; TM_DRAGONBREATH
 	iffalse .BagFull
-	getitemname STRING_BUFFER_3, TM_DRAGONBREATH
+	getitemname STRING_BUFFER_3, TM_THUNDERBOLT ; TM_DRAGONBREATH
 	writetext Text_ReceivedTM24
 	playsound SFX_ITEM
 	waitsfx
@@ -177,7 +177,7 @@ DragonsDenB1FCalcium:
 	itemball CALCIUM
 
 DragonsDenB1FMaxElixer:
-	itemball MAX_ELIXER
+	itemball MAX_ELIXIR
 
 DragonsDenB1FHiddenRevive:
 	hiddenitem REVIVE, EVENT_DRAGONS_DEN_B1F_HIDDEN_REVIVE
@@ -186,7 +186,7 @@ DragonsDenB1FHiddenMaxPotion:
 	hiddenitem MAX_POTION, EVENT_DRAGONS_DEN_B1F_HIDDEN_MAX_POTION
 
 DragonsDenB1FHiddenMaxElixer:
-	hiddenitem MAX_ELIXER, EVENT_DRAGONS_DEN_B1F_HIDDEN_MAX_ELIXER
+	hiddenitem MAX_ELIXIR, EVENT_DRAGONS_DEN_B1F_HIDDEN_MAX_ELIXER
 
 MovementDragonsDen_ClairWalksToYou:
 	slow_step RIGHT

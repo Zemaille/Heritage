@@ -58,7 +58,7 @@ LoadPartyMenuMonIconColors:
 	add hl, de
 	ld a, [hl]
 	ld [wCurPartySpecies], a
-	ld a, MON_DVS
+	ld a, MON_SHINY
 	call GetPartyParamLocation
 	call GetMenuMonIconPalette
 	ld hl, wShadowOAMSprite00Attributes
@@ -351,7 +351,7 @@ SetPartyMonIconAnimSpeed:
 	db $80 ; HP_RED
 
 NamingScreen_InitAnimatedMonIcon:
-	ld hl, wTempMonDVs
+	ld hl, wTempMonShiny
 	call SetMenuMonIconColor
 	ld a, [wTempIconSpecies]
 	ld [wCurIcon], a
@@ -366,7 +366,7 @@ NamingScreen_InitAnimatedMonIcon:
 	ret
 
 MoveList_InitAnimatedMonIcon:
-	ld a, MON_DVS
+	ld a, MON_SHINY
 	call GetPartyParamLocation
 	call SetMenuMonIconColor
 	ld a, [wTempIconSpecies]
@@ -401,7 +401,7 @@ Trade_LoadMonIconGFX:
 GetSpeciesIcon:
 ; Load species icon into VRAM at tile a
 	push de
-	ld a, MON_DVS
+	ld a, MON_SHINY
 	call GetPartyParamLocation
 	call SetMenuMonIconColor
 	ld a, [wTempIconSpecies]
@@ -421,7 +421,7 @@ FlyFunction_GetMonIcon:
 ; fallthrough
 SetOWFlyMonColor:
 	; Edit the OBJ 0 palette so that the cursor Pokémon has the right colors.
-	ld a, MON_DVS
+	ld a, MON_SHINY
 	call GetPartyParamLocation
 	call GetMenuMonIconPalette
 	add a
@@ -496,9 +496,27 @@ GetIconBank:
 	push hl
 	ld a, [wCurIcon]
 	call GetPokemonIndexFromID
+	lb bc, BANK("Mon Icons 1"), 8 ; Default Bank
+	ld a, h
+	cp HIGH(WALREIN) ; first species in "Mon Icons 4"
+	jr c, .check_3
+	ld a, l
+	cp LOW(WALREIN)
+	jr c, .check_3
+	ld b, BANK("Mon Icons 4")
+	jr .return
+.check_3
+	ld a, h
+	cp HIGH(BLAZIKEN) ; first species in "Mon Icons 3"
+	jr c, .check_2
+	ld a, l
+	cp LOW(BLAZIKEN)
+	jr c, .check_2
+	ld b, BANK("Mon Icons 3")
+	jr .return
+.check_2
 	ld a, h
 	cp HIGH(MAGIKARP) ; first species in "Mon Icons 2"
-	lb bc, BANK("Mon Icons 1"), 8
 	jr c, .return
 	ld a, l
 	cp LOW(MAGIKARP)

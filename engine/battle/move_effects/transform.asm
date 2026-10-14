@@ -6,8 +6,6 @@ BattleCommand_Transform:
 	jmp nz, BattleEffect_ButItFailed
 	call CheckHiddenOpponent
 	jmp nz, BattleEffect_ButItFailed
-	xor a
-	ld [wBattleAfterAnim], a
 	ld a, $1
 	ld [wBattleAnimParam], a
 	ld a, BATTLE_VARS_SUBSTATUS4
@@ -47,13 +45,27 @@ BattleCommand_Transform:
 	and a
 	jr z, .mimic_enemy_backup
 	ld a, [de]
-	ld [wEnemyBackupDVs], a
+	ld [wEnemyBackupIVsAndPersonality], a
 	inc de
 	ld a, [de]
-	ld [wEnemyBackupDVs + 1], a
+	ld [wEnemyBackupIVsAndPersonality + 1], a
+	inc de
+	ld a, [de]
+	ld [wEnemyBackupIVsAndPersonality + 2], a
+	inc de
+	ld a, [de]
+	ld [wEnemyBackupIVsAndPersonality + 3], a
+	dec de
+	dec de
 	dec de
 .mimic_enemy_backup
-; copy DVs
+; copy IVs
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
 	ld a, [hli]
 	ld [de], a
 	inc de
@@ -61,7 +73,7 @@ BattleCommand_Transform:
 	ld [de], a
 	inc de
 ; move pointer to stats
-	ld bc, wBattleMonStats - wBattleMonPP
+	ld bc, wBattleMonStats - wBattleMonPersonality
 	add hl, bc
 	push hl
 	ld h, d
@@ -75,10 +87,7 @@ BattleCommand_Transform:
 ; init the power points
 	ld bc, wBattleMonMoves - wBattleMonStructEnd
 	add hl, bc
-	push de
-	ld d, h
-	ld e, l
-	pop hl
+	call SwapHLDE
 	ld bc, wBattleMonPP - wBattleMonStructEnd
 	add hl, bc
 	ld b, NUM_MOVES
@@ -127,8 +136,6 @@ BattleCommand_Transform:
 	call BattleCommand_MoveDelay
 	call BattleCommand_RaiseSubNoAnim
 .after_anim
-	xor a
-	ld [wBattleAfterAnim], a
 	ld a, $2
 	ld [wBattleAnimParam], a
 	pop af

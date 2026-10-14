@@ -653,8 +653,7 @@ AI_Switch:
 	ld [wEnemyGoesFirst], a
 	ld hl, wEnemySubStatus4
 	res SUBSTATUS_RAGE, [hl]
-	xor a
-	ldh [hBattleTurn], a
+	call SetPlayerTurn
 	farcall PursuitSwitch
 
 	push af
@@ -674,16 +673,14 @@ AI_Switch:
 	call PrintText
 
 .skiptext
-	ld a, 1
-	ld [wBattleHasJustStarted], a
+	xor a
+	ld [wTotalBattleTurns], a
 	farcall NewEnemyMonStatus
 	farcall ResetEnemyStatLevels
 	ld hl, wPlayerSubStatus1
 	res SUBSTATUS_IN_LOVE, [hl]
 	farcall EnemySwitch
 	farcall ResetBattleParticipants
-	xor a
-	ld [wBattleHasJustStarted], a
 	ld a, [wLinkMode]
 	and a
 	ret nz

@@ -40,6 +40,10 @@ INCLUDE "engine/items/item_effects.asm"
 INCLUDE "engine/battle_anims/pokeball_wobble.asm"
 INCLUDE "engine/pokemon/knows_move.asm"
 
+SECTION "Poke Ball Code", ROMX
+
+INCLUDE "engine/items/poke_balls.asm"
+
 SECTION "Load Map Part", ROMX
 
 INCLUDE "engine/overworld/player_step.asm"
@@ -87,6 +91,13 @@ INCLUDE "engine/events/daycare.asm"
 INCLUDE "engine/events/print_unown.asm"
 INCLUDE "engine/events/print_photo.asm"
 INCLUDE "engine/pokemon/breeding.asm"
+INCLUDE "engine/link/time_capsule.asm"
+INCLUDE "engine/events/name_rater.asm"
+INCLUDE "engine/events/play_slow_cry.asm"
+INCLUDE "engine/link/time_capsule_2.asm"
+INCLUDE "engine/events/magikarp.asm"
+INCLUDE "engine/battle/hidden_power.asm"
+INCLUDE "engine/battle/misc.asm"
 
 
 SECTION "Roofs", ROMX
@@ -116,7 +127,7 @@ INCLUDE "engine/menus/trainer_card.asm"
 INCLUDE "engine/events/prof_oaks_pc.asm"
 INCLUDE "engine/overworld/decorations.asm"
 INCLUDE "engine/pokemon/level_up_happiness.asm"
-INCLUDE "engine/battle/read_trainer_dvs.asm"
+INCLUDE "engine/battle/read_trainer_ivs.asm"
 INCLUDE "engine/battle/returntobattle_useball.asm"
 INCLUDE "engine/battle/consume_held_item.asm"
 INCLUDE "data/moves/effects.asm"
@@ -142,11 +153,6 @@ INCLUDE "engine/battle/start_battle.asm"
 INCLUDE "engine/gfx/place_graphic.asm"
 
 
-SECTION "Effect Commands", ROMX
-
-INCLUDE "engine/battle/effect_commands.asm"
-
-
 SECTION "Enemy Trainers", ROMX
 
 INCLUDE "engine/battle/ai/items.asm"
@@ -164,6 +170,8 @@ INCLUDE "data/battle/effect_command_pointers.asm"
 SECTION "bank10", ROMX
 
 INCLUDE "engine/pokedex/pokedex.asm"
+INCLUDE "engine/pokedex/new_pokedex_entry.asm"
+INCLUDE "engine/pokedex/unown_dex.asm"
 INCLUDE "data/moves/moves.asm"
 INCLUDE "engine/pokemon/evolve.asm"
 
@@ -236,8 +244,13 @@ INCLUDE "engine/link/init_list.asm"
 INCLUDE "engine/pokemon/experience.asm"
 INCLUDE "engine/pokemon/switchpartymons.asm"
 INCLUDE "engine/gfx/load_pics.asm"
-INCLUDE "data/pokemon/base_stats.asm"
 INCLUDE "data/pokemon/names.asm"
+INCLUDE "engine/pokemon/natures.asm"
+
+
+SECTION "Base Stats", ROMX
+
+INCLUDE "data/pokemon/base_stats.asm"
 
 
 SECTION "Crystal Phone Text", ROMX
@@ -401,13 +414,29 @@ SECTION "Battle Animation Data", ROMX
 INCLUDE "data/moves/animation_pointers.asm"
 
 
-SECTION "Move Animations", ROMX
+SECTION "Move Animation Framesets", ROMX
+
+INCLUDE "engine/battle_anims/framesets.asm"
+INCLUDE "data/battle_anims/framesets.asm"
+
+
+SECTION "Move Animation OAMs", ROMX
+
+INCLUDE "engine/battle_anims/anim_oam.asm"
+INCLUDE "data/battle_anims/oam.asm"
+
+
+SECTION "Move Animation Commands", ROMX
 
 INCLUDE "engine/battle_anims/anim_commands.asm"
-INCLUDE "engine/battle_anims/core.asm"
 INCLUDE "engine/battle_anims/functions.asm"
-INCLUDE "engine/battle_anims/helpers.asm"
-INCLUDE "data/battle_anims/oam.asm"
+
+
+SECTION "Move Animation Objects", ROMX
+
+INCLUDE "engine/battle_anims/core.asm"
+INCLUDE "engine/battle_anims/load_gfx.asm"
+INCLUDE "data/battle_anims/objects.asm"
 INCLUDE "data/battle_anims/object_gfx.asm"
 
 
@@ -415,30 +444,9 @@ SECTION "Pic Animations 1", ROMX
 
 INCLUDE "engine/gfx/pic_animation.asm"
 INCLUDE "gfx/pokemon/anim_pointers.asm"
-INCLUDE "gfx/pokemon/anims.asm"
 INCLUDE "gfx/pokemon/idle_pointers.asm"
-INCLUDE "gfx/pokemon/idles.asm"
-INCLUDE "gfx/pokemon/unown_anim_pointers.asm"
-INCLUDE "gfx/pokemon/unown_anims.asm"
-INCLUDE "gfx/pokemon/unown_idle_pointers.asm"
-INCLUDE "gfx/pokemon/unown_idles.asm"
 INCLUDE "gfx/pokemon/bitmask_pointers.asm"
-INCLUDE "gfx/pokemon/bitmasks.asm"
-INCLUDE "gfx/pokemon/unown_bitmask_pointers.asm"
-INCLUDE "gfx/pokemon/unown_bitmasks.asm"
-
-
-SECTION "Pic Animations 2", ROMX
-
 INCLUDE "gfx/pokemon/frame_pointers.asm"
-INCLUDE "gfx/pokemon/kanto_frames.asm"
-
-
-SECTION "Pic Animations 3", ROMX
-
-INCLUDE "gfx/pokemon/johto_frames.asm"
-INCLUDE "gfx/pokemon/unown_frame_pointers.asm"
-INCLUDE "gfx/pokemon/unown_frames.asm"
 
 
 SECTION "bank38", ROMX
@@ -459,15 +467,11 @@ INCLUDE "engine/movie/intro.asm"
 SECTION "bank3E", ROMX
 
 INCLUDE "engine/gfx/load_font.asm"
-INCLUDE "engine/link/time_capsule.asm"
-INCLUDE "engine/events/name_rater.asm"
-INCLUDE "engine/events/play_slow_cry.asm"
-INCLUDE "engine/pokedex/new_pokedex_entry.asm"
-INCLUDE "engine/link/time_capsule_2.asm"
-INCLUDE "engine/pokedex/unown_dex.asm"
-INCLUDE "engine/events/magikarp.asm"
-INCLUDE "engine/battle/hidden_power.asm"
-INCLUDE "engine/battle/misc.asm"
+
+
+SECTION "Footprints", ROMX
+
+INCLUDE "gfx/footprints.asm"
 
 
 SECTION "bank3F", ROMX
@@ -486,11 +490,6 @@ INCLUDE "engine/link/mystery_gift.asm"
 INCLUDE "engine/battle/used_move_text.asm"
 INCLUDE "mobile/mobile_41.asm"
 INCLUDE "engine/gfx/load_overworld_font.asm"
-
-
-SECTION "Move Animation Framesets", ROMX
-
-INCLUDE "engine/battle_anims/framesets.asm"
 
 
 SECTION "Title", ROMX
@@ -678,9 +677,18 @@ INCLUDE "engine/gfx/sprite_palettes.asm"
 INCLUDE "engine/gfx/dynamic_pals.asm"
 
 
+SECTION "Abilities", ROMX
+
+INCLUDE "engine/abilities/ability_prints.asm"
+
 SECTION "Fade System", ROMX
 
 INCLUDE "engine/gfx/fade.asm"
+
+
+SECTION "Pokemon Body Data", ROMX
+
+INCLUDE "data/pokemon/body_data.asm"
 
 
 SECTION "Stadium 2 Checksums", ROMX[$7DE0], BANK[$7F]

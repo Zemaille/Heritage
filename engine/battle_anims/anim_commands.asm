@@ -96,7 +96,7 @@ RunBattleAnimScript:
 
 .playframe
 	call RunBattleAnimCommand
-	call _ExecuteBGEffects
+	farcall ExecuteBGEffects
 	call BattleAnim_UpdateOAM_All
 	call PushLYOverrides
 	call BattleAnimRequestPals
@@ -182,9 +182,15 @@ BattleAnimRequestPals:
 	jmp nz, BattleAnim_SetOBPals
 	ret
 
+BattleAnimCmd_ClearEnemyHud:
+	ldh a, [hBattleTurn]
+	xor 1
+	jr ClearActorHud.continue
+
 ClearActorHud:
 	ldh a, [hBattleTurn]
 	and a
+.continue
 	jr z, .player
 
 	hlcoord 1, 0
@@ -330,7 +336,7 @@ BattleAnimCommands::
 	dw BattleAnimCmd_OBP1              ; f3
 	dw BattleAnimCmd_KeepSprites       ; f4
 	dw BattleAnimCmd_KeepSpritesAndOAM ; f5
-	dw DoNothing ; BattleAnimCmd_F6    ; f6
+	dw BattleAnimCmd_ClearEnemyHud     ; f6
 	dw DoNothing ; BattleAnimCmd_F7    ; f7
 	dw BattleAnimCmd_IfParamEqual      ; f8
 	dw BattleAnimCmd_SetVar            ; f9
@@ -578,7 +584,7 @@ BattleAnimCmd_Obj:
 	ld [wBattleObjectTempYCoord], a
 	call GetBattleAnimByte
 	ld [wBattleObjectTempParam], a
-	jmp QueueBattleAnimation
+	farjp QueueBattleAnimation
 
 BattleAnimCmd_BGEffect:
 	call GetBattleAnimByte
@@ -589,7 +595,7 @@ BattleAnimCmd_BGEffect:
 	ld [wBattleBGEffectTempTurn], a
 	call GetBattleAnimByte
 	ld [wBattleBGEffectTempParam], a
-	jmp _QueueBGEffect
+	farjp QueueBGEffect
 
 BattleAnimCmd_BGP:
 	call GetBattleAnimByte
@@ -656,7 +662,7 @@ endr
 	ld de, vTiles0 tile BATTLEANIM_BASE_TILE
 	add hl, de
 	ld a, [wBattleAnimByte]
-	call LoadBattleAnimGFX
+	farcall LoadBattleAnimGFX
 	ld a, [wBattleAnimGFXTempTileID]
 	add c
 	ld [wBattleAnimGFXTempTileID], a
@@ -676,19 +682,13 @@ BattleAnimCmd_IncObj:
 	ld d, [hl]
 	ld a, [wBattleAnimByte]
 	cp d
-	jr z, .found
+	jmp z, BattleAnim_IncAnonJumptableIndex
 	ld hl, BATTLEANIMSTRUCT_LENGTH
 	add hl, bc
 	ld c, l
 	ld b, h
 	dec e
 	jr nz, .loop
-	ret
-
-.found
-	ld hl, BATTLEANIMSTRUCT_JUMPTABLE_INDEX
-	add hl, bc
-	inc [hl]
 	ret
 
 BattleAnimCmd_IncBGEffect:
@@ -865,7 +865,7 @@ BattleAnimCmd_Transform:
 
 	ld a, [wTempBattleMonSpecies]
 	ld [wCurPartySpecies], a
-	ld hl, wBattleMonDVs
+	ld hl, wBattleMonForm
 	predef GetUnownLetter
 	ld de, vTiles0 tile $00
 	predef GetMonFrontpic
@@ -874,7 +874,7 @@ BattleAnimCmd_Transform:
 .player
 	ld a, [wTempEnemyMonSpecies]
 	ld [wCurPartySpecies], a
-	ld hl, wEnemyMonDVs
+	ld hl, wEnemyMonForm
 	predef GetUnownLetter
 	ld de, vTiles0 tile $00
 	predef GetMonBackpic
@@ -1184,14 +1184,14 @@ BattleAnimCmd_BeatUp:
 	and a
 	jr z, .player
 
-	ld hl, wBattleMonDVs
+	ld hl, wBattleMonForm
 	predef GetUnownLetter
 	ld de, vTiles2 tile $00
 	predef GetMonFrontpic
 	jr .done
 
 .player
-	ld hl, wEnemyMonDVs
+	ld hl, wEnemyMonForm
 	predef GetUnownLetter
 	ld de, vTiles2 tile $31
 	predef GetMonBackpic
@@ -1406,8 +1406,8 @@ ClearBattleAnims::
 
 	ld hl, wFXAnimID
 	ld a, [hli]
-	ld c, a
 	ld b, [hl]
+	ld c, a
 	call GetBattleAnimPointer
 	call BattleAnimAssignPals
 	jmp DelayFrame
@@ -1495,7 +1495,7 @@ BattleAnim_UpdateOAM_All:
 	push hl
 	push de
 	call DoBattleAnimFrame
-	call BattleAnimOAMUpdate
+	farcall BattleAnimOAMUpdate
 	pop de
 	pop hl
 	ret c

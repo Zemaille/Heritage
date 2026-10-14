@@ -69,7 +69,7 @@ clean: tidy
 	        -o -name "*.sgb.tilemap" \) \
 	     -delete
 	find gfx/pokemon -mindepth 1 \
-	     ! -path "gfx/pokemon/unown/*" \
+	     ! -path "gfx/pokemon/johto/unown/*" \
 	     \( -name "bitmask.asm" \
 	        -o -name "frames.asm" \
 	        -o -name "front.animated.tilemap" \
@@ -180,15 +180,16 @@ gfx/trainers/kris.2bpp: gfx/trainers/kris.png gfx/trainers/kris.gbcpal
 	$(RGBGFX) $(rgbgfx) --colors gbc:$(word 2,$^) -o $@ $<
 
 # Egg does not have a back sprite, so it only uses front.gbcpal
-gfx/pokemon/egg/front.2bpp: gfx/pokemon/egg/front.png gfx/pokemon/egg/front.gbcpal
+gfx/pokemon/egg/normal.gbcpal: gfx/pokemon/egg/front.gbcpal
+	tools/gbcpal $(tools/gbcpal) $@ $^
 gfx/pokemon/egg/front.2bpp: RGBGFXFLAGS += --colors gbc:$(word 2,$^)
 
 # Unown letters share one normal.gbcpal
-unown_pngs := $(wildcard gfx/pokemon/unown_*/front.png) $(wildcard gfx/pokemon/unown_*/back.png)
+unown_pngs := $(wildcard gfx/pokemon/unown/unown_*/front.png) $(wildcard gfx/pokemon/unown/unown_*/back.png)
 $(foreach png, $(unown_pngs),\
 	$(eval $(png:.png=.2bpp): $(png) gfx/pokemon/unown/normal.gbcpal))
-gfx/pokemon/unown_%/back.2bpp: RGBGFXFLAGS += --colors gbc:$(word 2,$^)
-gfx/pokemon/unown_%/front.2bpp: RGBGFXFLAGS += --colors gbc:$(word 2,$^)
+gfx/pokemon/unown/unown_%/back.2bpp: RGBGFXFLAGS += --colors gbc:$(word 2,$^)
+gfx/pokemon/unown/unown_%/front.2bpp: RGBGFXFLAGS += --colors gbc:$(word 2,$^)
 gfx/pokemon/unown/normal.gbcpal: $(subst .png,.gbcpal,$(unown_pngs))
 	tools/gbcpal $(tools/gbcpal) $@ $^
 
@@ -253,7 +254,7 @@ gfx/battle_anims/explosion.2bpp: tools/gfx += --remove-whitespace
 gfx/battle_anims/hit.2bpp: tools/gfx += --remove-whitespace
 gfx/battle_anims/horn.2bpp: tools/gfx += --remove-whitespace
 gfx/battle_anims/lightning.2bpp: tools/gfx += --remove-whitespace
-gfx/battle_anims/misc.2bpp: tools/gfx += --remove-duplicates --remove-xflip
+gfx/battle_anims/misc1.2bpp: tools/gfx += --remove-duplicates --remove-xflip
 gfx/battle_anims/noise.2bpp: tools/gfx += --remove-whitespace
 gfx/battle_anims/objects.2bpp: tools/gfx += --remove-whitespace --remove-xflip
 gfx/battle_anims/pokeball.2bpp: tools/gfx += --remove-xflip --keep-whitespace

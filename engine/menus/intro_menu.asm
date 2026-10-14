@@ -146,6 +146,9 @@ _ResetWRAM:
 	ld hl, wNumBalls
 	call .InitList
 
+	ld hl, wNumBerries
+	call .InitList
+
 	ld hl, wNumPCItems
 	call .InitList
 
@@ -296,8 +299,7 @@ Continue:
 	call DisplaySaveInfoOnContinue
 	ld a, $1
 	ldh [hBGMapMode], a
-	ld c, 20
-	call DelayFrames
+	call Wait20Frames
 	call ConfirmContinue
 	jmp c, CloseWindow
 	call Continue_CheckRTC_RestartClock
@@ -312,8 +314,7 @@ Continue:
 	call CloseWindow
 	call ClearTilemap
 	farcall ClearSavedObjPals
-	ld c, 20
-	call DelayFrames
+	call Wait20Frames
 	farcall JumpRoamMons
 	farcall CopyMysteryGiftReceivedDecorationsToPC
 	farcall ClockContinue
@@ -574,9 +575,10 @@ if !DEF(_DEBUG)
 	call PrepMonFrontpic
 
 	xor a
-	ld [wTempMonDVs], a
-	ld [wTempMonDVs + 1], a
-	ld [wTempMonDVs + 2], a
+	ld [wTempMonIVs], a
+	ld [wTempMonIVs + 1], a
+	ld [wTempMonIVs + 2], a
+	ld [wTempMonIVs + 3], a
 
 	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
 	call GetSGBLayout
@@ -763,8 +765,7 @@ Intro_RotatePalettesLeftFrontpic:
 .loop
 	ld a, [hli]
 	call DmgToCgbBGPals
-	ld c, 10
-	call DelayFrames
+	call Wait10Frames
 	dec b
 	jr nz, .loop
 	ret

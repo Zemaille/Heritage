@@ -15,7 +15,7 @@ NewPokedexEntry:
 	ldh [hSCX], a
 	xor a
 	ld [wPokedexStatus], a
-	farcall _NewPokedexEntry
+	call _NewPokedexEntry
 	call WaitPressAorB_BlinkCursor
 	ld a, 1 ; page 2
 	ld [wPokedexStatus], a
@@ -38,13 +38,17 @@ NewPokedexEntry:
 	call ClearTilemap
 	call LoadFontsExtra
 	call LoadStandardFont
-	farcall Pokedex_PlaceFrontpicTopLeftCorner
+	call Pokedex_PlaceFrontpicTopLeftCorner
 	call WaitBGMap2
-	farcall GetEnemyMonDVs
+	farcall GetEnemyMonIVs
 	ld a, [hli]
-	ld [wTempMonDVs], a
-	ld a, [hl]
-	ld [wTempMonDVs + 1], a
+	ld [wTempMonIVs], a
+	ld a, [hli]
+	ld [wTempMonIVs + 1], a
+	ld a, [hli]
+	ld [wTempMonIVs + 2], a
+	ld a, [hli]
+	ld [wTempMonIVs + 3], a
 	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
 	call GetSGBLayout
 	jmp SetDefaultBGPAndOBP

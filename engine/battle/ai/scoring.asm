@@ -165,8 +165,7 @@ AI_Types:
 	push hl
 	push bc
 	push de
-	ld a, 1
-	ldh [hBattleTurn], a
+	call SetEnemyTurn
 	farcall BattleCheckTypeMatchup
 	pop de
 	pop bc
@@ -385,6 +384,7 @@ AI_Smart_EffectHandlers:
 	dbw EFFECT_SOLARBEAM,        AI_Smart_Solarbeam
 	dbw EFFECT_THUNDER,          AI_Smart_Thunder
 	dbw EFFECT_FLY,              AI_Smart_Fly
+	dbw EFFECT_HAIL,             AI_Smart_Hail
 	db -1 ; end
 
 AI_Smart_Sleep:
@@ -408,8 +408,7 @@ AI_Smart_Sleep:
 
 AI_Smart_LeechHit:
 	push hl
-	ld a, 1
-	ldh [hBattleTurn], a
+	call SetEnemyTurn
 	farcall BattleCheckTypeMatchup
 	pop hl
 
@@ -484,8 +483,7 @@ AI_Smart_LockOn:
 	cp 71 percent - 1
 	jr nc, .checkmove
 
-	ld a, 1
-	ldh [hBattleTurn], a
+	call SetEnemyTurn
 
 	push hl
 	push bc
@@ -1300,8 +1298,7 @@ AI_Smart_Mimic:
 	ld a, [wLastPlayerCounterMove]
 	call AIGetEnemyMove
 
-	ld a, 1
-	ldh [hBattleTurn], a
+	call SetEnemyTurn
 	farcall BattleCheckTypeMatchup
 
 	ld a, [wTypeMatchup]
@@ -1635,8 +1632,7 @@ AI_Smart_PriorityHit:
 	jmp nz, AIDiscourageMove
 
 ; Greatly encourage this move if it will KO the player.
-	ld a, 1
-	ldh [hBattleTurn], a
+	call SetEnemyTurn
 	push hl
 	farcall EnemyAttackDamage
 	farcall BattleCommand_DamageCalc
@@ -1675,8 +1671,7 @@ AI_Smart_Conversion2:
 	call GetMoveAttribute
 	ld [wPlayerMoveStruct + MOVE_TYPE], a
 
-	xor a
-	ldh [hBattleTurn], a
+	call SetPlayerTurn
 
 	farcall BattleCheckTypeMatchup
 
@@ -2072,6 +2067,45 @@ AI_Smart_Sandstorm:
 	db STEEL
 	db -1 ; end
 
+AI_Smart_Hail:
+; Greatly discourage this move if the player is immune to Hail damage.
+	ld a, [wBattleMonType1]
+	cp ICE
+	jr z, .greatly_discourage
+
+	ld a, [wBattleMonType2]
+	cp ICE
+	jr z, .greatly_discourage
+
+; Discourage this move if player's HP is below 50%.
+	call AICheckPlayerHalfHP
+	jr nc, .discourage
+
+; Encourage move if AI has good Hail moves
+	push hl
+	ld hl, .GoodHailMoves
+	call AIHasMoveInArray
+	pop hl
+	jr c, .encourage
+
+; 50% chance to encourage this move otherwise.
+	call AI_50_50
+	ret c
+
+.encourage
+	dec [hl]
+	ret
+
+.greatly_discourage
+	inc [hl]
+.discourage
+	inc [hl]
+	ret
+
+.GoodHailMoves
+	db BLIZZARD
+	db -1 ; end
+
 AI_Smart_Endure:
 ; Greatly discourage this move if the enemy already used Protect.
 	ld a, [wEnemyProtectCount]
@@ -2312,10 +2346,9 @@ AI_Smart_RapidSpin:
 
 AI_Smart_HiddenPower:
 	push hl
-	ld a, 1
-	ldh [hBattleTurn], a
+	call SetEnemyTurn
 
-; Calculate Hidden Power's type and base power based on enemy's DVs.
+; Calculate Hidden Power's type and base power based on enemy's IVs.
 	farcall HiddenPowerDamage
 	farcall BattleCheckTypeMatchup
 	pop hl
@@ -3036,18 +3069,26 @@ AI_Aggressive:
 INCLUDE "data/battle/ai/reckless_moves.asm"
 
 AIDamageCalc:
-	ld a, 1
-	ldh [hBattleTurn], a
+	call SetEnemyTurn
 	ld a, [wEnemyMoveStruct + MOVE_EFFECT]
+	cp EFFECT_LOW_KICK
+	jr z, .low_kick
 	ld de, 1
 	ld hl, ConstantDamageEffects
 	call IsInArray
-	jr nc, .notconstant
+	jr nc, .regular_damage
 	farjp BattleCommand_ConstantDamage
 
-.notconstant
-	farcall EnemyAttackDamage
+.low_kick
+	farcall BattleCommand_DamageStats
+	farcall BattleCommand_LowKick
+	jr .damagecalc
+
+.regular_damage
+	farcall BattleCommand_DamageStats
+.damagecalc
 	farcall BattleCommand_DamageCalc
+.stab
 	farjp BattleCommand_Stab
 
 INCLUDE "data/battle/ai/constant_damage_effects.asm"
@@ -3140,8 +3181,7 @@ AI_Status:
 	push hl
 	push bc
 	push de
-	ld a, 1
-	ldh [hBattleTurn], a
+	call SetEnemyTurn
 	farcall BattleCheckTypeMatchup
 	pop de
 	pop bc

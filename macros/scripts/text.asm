@@ -2,6 +2,10 @@ MACRO text
 	db TX_START, \# ; Start writing text
 ENDM
 
+MACRO next1
+	db "<LNBRK>", \# ; Move one screen row down
+ENDM
+
 MACRO next
 	db "<NEXT>", \# ; Move a line down
 ENDM

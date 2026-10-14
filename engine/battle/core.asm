@@ -6,8 +6,7 @@ DoBattle:
 	ld [wBattleParticipantsIncludingFainted], a
 	ld [wBattlePlayerAction], a
 	ld [wBattleEnded], a
-	inc a
-	ld [wBattleHasJustStarted], a
+	ld [wTotalBattleTurns], a
 	ld hl, wOTPartyMon1HP
 	ld bc, PARTYMON_STRUCT_LENGTH - 1
 	ld d, BATTLEACTION_SWITCH1 - 1
@@ -137,19 +136,22 @@ WildFled_EnemyFled_LinkBattleCanceled:
 	ld de, SFX_RUN
 	call WaitPlaySFX
 	call SetPlayerTurn
-	ld a, 1
-	ld [wBattleEnded], a
-	ret
+	jmp EndBattle
 
 BattleTurn:
 .loop
+	ld hl, wTotalBattleTurns
+	inc [hl]
+	jr nz, .done_turn_increment
+	dec [hl]
+
+.done_turn_increment
 	call CheckContestBattleOver
 	ret c
 
 	xor a
 	ld [wPlayerIsSwitching], a
 	ld [wEnemyIsSwitching], a
-	ld [wBattleHasJustStarted], a
 	ld [wPlayerJustGotFrozen], a
 	ld [wEnemyJustGotFrozen], a
 	ld [wCurDamage], a
@@ -823,39 +825,33 @@ CompareMovePriority:
 	ret
 
 GetMovePriority:
-; Return the priority (0-3) of move a.
+; Return the priority (0-9) of move a.
 
-	ld b, a
-
-	; Vital Throw goes last.
 	call GetMoveIndexFromID
-	ld a, h
-	if HIGH(VITAL_THROW)
-		cp HIGH(VITAL_THROW)
-	else
-		and a
-	endc
-	jr nz, .not_vital_throw
-	ld a, l
-	sub LOW(VITAL_THROW)
-	ret z
+	ld b, h
+	ld c, l
 
-.not_vital_throw
-	call GetMoveEffect
 	ld hl, MoveEffectPriorities
 .loop
 	ld a, [hli]
+	cp -1 ; SPIT_UP cannot be a priorty move
+	jr z, .default_priority
+	cp c
+	jr nz, .skip
+	ld a, [hli]
 	cp b
-	jr z, .done
-	inc hl
-	cp -1
-	jr nz, .loop
-
-	ld a, BASE_PRIORITY
-	ret
-
-.done
 	ld a, [hl]
+	ret z
+	inc hl
+	jr .loop
+
+.skip
+	inc hl
+	inc hl
+	jr .loop
+
+.default_priority
+	ld a, BASE_PRIORITY
 	ret
 
 INCLUDE "data/moves/effects_priorities.asm"
@@ -872,7 +868,6 @@ Battle_EnemyFirst:
 	call TryEnemyFlee
 	jmp c, WildFled_EnemyFled_LinkBattleCanceled
 	call SetEnemyTurn
-	ld a, $1
 	ld [wEnemyGoesFirst], a
 	farcall AI_SwitchOrTryItem
 	jr c, .switch_item
@@ -1125,8 +1120,7 @@ ResidualDamage:
 
 .fainted
 	call RefreshBattleHuds
-	ld c, 20
-	call DelayFrames
+	call Wait20Frames
 	xor a
 	ret
 
@@ -1520,9 +1514,7 @@ HandleFutureSight:
 	ld a, EFFECTIVE
 	ld [wTypeModifier], a
 	farcall DoMove
-	xor a
-	ld [wCurDamage], a
-	ld [wCurDamage + 1], a
+	call ResetDamage
 
 	ld a, BATTLE_VARS_MOVE
 	call GetBattleVarAddr
@@ -1700,20 +1692,30 @@ HandleWeather:
 
 	ld hl, wWeatherCount
 	dec [hl]
-	jr z, .ended
+	jr nz, .continues
 
+; ended
+	ld hl, .WeatherEndedMessages
+	call .PrintWeatherMessage
+	xor a
+	ld [wBattleWeather], a
+	ret
+
+.continues
 	ld hl, .WeatherMessages
 	call .PrintWeatherMessage
+	call .PlayWeatherAnimation
 
+;check_sandstorm
 	ld a, [wBattleWeather]
 	cp WEATHER_SANDSTORM
-	ret nz
+	jr nz, .check_hail
 
 	ldh a, [hSerialConnectionStatus]
 	cp USING_EXTERNAL_CLOCK
 	jr z, .enemy_first
 
-; player first
+.player_first
 	call SetPlayerTurn
 	call .SandstormDamage
 	call SetEnemyTurn
@@ -1752,24 +1754,80 @@ HandleWeather:
 	cp STEEL
 	ret z
 
-	call SwitchTurnCore
-	xor a
-	ld [wBattleAfterAnim], a
-	ld de, ANIM_IN_SANDSTORM
-	call Call_PlayBattleAnim
-	call SwitchTurnCore
-	call GetEighthMaxHP
+	call GetSixteenthMaxHP
 	call SubtractHPFromUser
 
 	ld hl, SandstormHitsText
 	jmp StdBattleTextbox
 
-.ended
-	ld hl, .WeatherEndedMessages
-	call .PrintWeatherMessage
-	xor a
-	ld [wBattleWeather], a
-	ret
+.check_hail
+	ld a, [wBattleWeather]
+	cp WEATHER_HAIL
+	ret nz
+
+	ldh a, [hSerialConnectionStatus]
+	cp USING_EXTERNAL_CLOCK
+	jr z, .enemy_first_hail
+
+; player first
+	call SetPlayerTurn
+	call .HailDamage
+	call SetEnemyTurn
+	jr .HailDamage
+
+.enemy_first_hail
+	call SetEnemyTurn
+	call .HailDamage
+	call SetPlayerTurn
+
+.HailDamage:
+	ld a, BATTLE_VARS_SUBSTATUS3
+	call GetBattleVar
+	bit SUBSTATUS_UNDERGROUND, a
+	ret nz
+
+	ld hl, wBattleMonType1
+	ldh a, [hBattleTurn]
+	and a
+	jr z, .ok1
+	ld hl, wEnemyMonType1
+.ok1
+	ld a, [hli]
+	cp ICE
+	ret z
+
+	ld a, [hl]
+	cp ICE
+	ret z
+
+	call GetSixteenthMaxHP
+	call SubtractHPFromUser
+
+	ld hl, PeltedByHailText
+	jp StdBattleTextbox
+
+
+.PlayWeatherAnimation:
+	xor a ; uses one byte of ROM, compared to two for "ld a, 1"
+	ld [wBattleAfterAnim], a
+	call SetPlayerTurn
+	ld hl, .WeatherAnimations
+	ld a, [wBattleWeather]
+	dec a
+	ld b, 0
+	ld c, a
+	add hl, bc
+	add hl, bc
+	ld a, [hli]
+	ld e, a
+	ld d, [hl]
+	jmp Call_PlayBattleAnim
+
+.WeatherAnimations:
+	dw RAIN_DANCE
+	dw SUNNY_DAY
+	dw SANDSTORM
+	dw HAIL
 
 .PrintWeatherMessage:
 	ld a, [wBattleWeather]
@@ -1788,12 +1846,14 @@ HandleWeather:
 	dw BattleText_RainContinuesToFall
 	dw BattleText_TheSunlightIsStrong
 	dw BattleText_TheSandstormRages
+	dw BattleText_HailContinuesToFall
 
 .WeatherEndedMessages:
 ; entries correspond to WEATHER_* constants
 	dw BattleText_TheRainStopped
 	dw BattleText_TheSunlightFaded
 	dw BattleText_TheSandstormSubsided
+	dw BattleText_TheHailStopped
 
 SubtractHPFromTarget:
 	call SubtractHP
@@ -1836,57 +1896,28 @@ SubtractHP:
 	ret
 
 GetSixteenthMaxHP:
-	call GetQuarterMaxHP
-; quarter result
-	srl c
-	srl c
-; at least 1
-	ld a, c
-	and a
-	ret nz
-	inc c
-	ret
+; output: bc
+	call GetEighthMaxHP
+	jr HalveBC
 
 GetEighthMaxHP:
 ; output: bc
 	call GetQuarterMaxHP
-; assumes nothing can have 1024 or more hp
-; halve result
-	srl c
-; at least 1
-	ld a, c
-	and a
-	ret nz
-	inc c
-	ret
+	jr HalveBC
 
 GetQuarterMaxHP:
 ; output: bc
-	call GetMaxHP
-
-; quarter result
-	srl b
-	rr c
-	srl b
-	rr c
-
-; assumes nothing can have 1024 or more hp
-; at least 1
-	ld a, c
-	and a
-	ret nz
-	inc c
-	ret
+	call GetHalfMaxHP
+	jr HalveBC
 
 GetHalfMaxHP:
 ; output: bc
 	call GetMaxHP
 
-; halve result
+HalveBC:
 	srl b
 	rr c
-
-; at least 1
+FloorBC:
 	ld a, c
 	or b
 	ret nz
@@ -1917,6 +1948,20 @@ CheckUserHasEnoughHP:
 	and a
 	jr z, .ok
 	ld hl, wEnemyMonHP + 1
+.ok
+	ld a, c
+	sub [hl]
+	dec hl
+	ld a, b
+	sbc [hl]
+	ret
+
+CheckOpponentHasEnoughHP:
+	ld hl, wEnemyMonHP + 1
+	ldh a, [hBattleTurn]
+	and a
+	jr z, .ok
+	ld hl, wBattleMonHP + 1
 .ok
 	ld a, c
 	sub [hl]
@@ -2014,13 +2059,7 @@ HandleEnemyMonFaint:
 
 	ld a, [wBattleMode]
 	dec a
-	jr nz, .trainer
-
-	ld a, 1
-	ld [wBattleEnded], a
-	ret
-
-.trainer
+	jmp z, EndBattle
 	call CheckEnemyTrainerDefeated
 	jmp z, WinTrainerBattle
 
@@ -2030,13 +2069,7 @@ HandleEnemyMonFaint:
 	jr nz, .player_mon_not_fainted
 
 	call AskUseNextPokemon
-	jr nc, .dont_flee
-
-	ld a, 1
-	ld [wBattleEnded], a
-	ret
-
-.dont_flee
+	jmp c, EndBattle
 	call ForcePlayerMonChoice
 
 	ld a, BATTLEPLAYERACTION_USEITEM
@@ -2837,9 +2870,13 @@ ForcePickSwitchMonInBattle:
 	xor a
 	ret
 
-LostBattle:
+EndBattle:
 	ld a, 1
 	ld [wBattleEnded], a
+	ret
+
+LostBattle:
+	call EndBattle
 
 	ld a, [wInBattleTowerBattle]
 	bit IN_BATTLE_TOWER_BATTLE_F, a
@@ -3085,17 +3122,17 @@ CheckWhetherSwitchmonIsPredetermined:
 .not_linked
 	ld a, [wEnemySwitchMonIndex]
 	and a
-	jr z, .check_wBattleHasJustStarted
+	jr z, .check_wTotalBattleTurns
 
 	dec a
 	ld b, a
 	jr .return_carry
 
-.check_wBattleHasJustStarted
-	ld a, [wBattleHasJustStarted]
+.check_wTotalBattleTurns
+	ld a, [wTotalBattleTurns]
 	and a
 	ld b, 0
-	jr nz, .return_carry
+	jr z, .return_carry
 
 	and a
 	ret
@@ -3355,7 +3392,7 @@ LoadEnemyMonToSwitchTo:
 	ld a, [wFirstUnownSeen]
 	and a
 	jr nz, .skip_unown
-	ld hl, wEnemyMonDVs
+	ld hl, wEnemyMonForm
 	predef GetUnownLetter
 	ld a, [wUnownLetter]
 	ld [wFirstUnownSeen], a
@@ -3369,8 +3406,8 @@ LoadEnemyMonToSwitchTo:
 	ret
 
 CheckWhetherToAskSwitch:
-	ld a, [wBattleHasJustStarted]
-	dec a
+	ld a, [wTotalBattleTurns]
+	and a
 	jr z, .return_nc
 	ld a, [wPartyCount]
 	dec a
@@ -3463,7 +3500,8 @@ ShowSetEnemyMonAndSendOutAnimation:
 	ld a, OTPARTYMON
 	ld [wMonType], a
 	predef CopyMonToTempMon
-	call GetEnemyMonFrontpic
+	ld hl, BattleAnimCmd_DropSub
+	call GetEnemyMonFrontpic_DoAnim
 
 	xor a
 	ld [wBattleAfterAnim], a
@@ -3503,7 +3541,22 @@ ShowSetEnemyMonAndSendOutAnimation:
 	call UpdateEnemyHUD
 	ld a, $1
 	ldh [hBGMapMode], a
-	ret
+
+	ld a, [wEnemySubStatus4]
+	bit SUBSTATUS_SUBSTITUTE, a
+	ret z
+
+	farcall CheckBattleScene
+	jr nc, AnimateSubOnEntry
+
+	ld hl, BattleAnimCmd_RaiseSub
+	jp GetEnemyMonFrontpic_DoAnim
+
+AnimateSubOnEntry:
+	ld a, 2 
+	ld [wBattleAnimParam], a
+	ld de, SUBSTITUTE
+	jp Call_PlayBattleAnim
 
 NewEnemyMonStatus:
 	xor a
@@ -3563,9 +3616,9 @@ CheckIfCurPartyMonIsFitToFight:
 	or [hl]
 	ret nz
 
-	ld a, [wBattleHasJustStarted]
+	ld a, [wTotalBattleTurns]
 	and a
-	jr nz, .finish_fail
+	jr z, .finish_fail
 	ld hl, wPartySpecies
 	ld a, [wCurPartyMon]
 	ld c, a
@@ -3764,11 +3817,12 @@ InitBattleMon:
 	ld de, wBattleMonSpecies
 	ld bc, MON_OT_ID
 	rst CopyBytes
-	ld bc, MON_DVS - MON_OT_ID
+	ld bc, MON_IVS - MON_OT_ID
 	add hl, bc
-	ld de, wBattleMonDVs
-	ld bc, MON_POKERUS - MON_DVS
+	ld de, wBattleMonIVs
+	ld bc, MON_POKERUS - MON_IVS
 	rst CopyBytes
+	inc hl
 	inc hl
 	inc hl
 	inc hl
@@ -3798,36 +3852,45 @@ InitBattleMon:
 	jmp BadgeStatBoosts
 
 BattleCheckPlayerShininess:
-	call GetPartyMonDVs
+	call GetPartyMonShiny
 	jr BattleCheckShininess
 
 BattleCheckEnemyShininess:
-	call GetEnemyMonDVs
+	call GetEnemyMonShiny
 
 BattleCheckShininess:
 	ld b, h
 	ld c, l
 	farjp CheckShininess
 
-GetPartyMonDVs:
-	ld hl, wBattleMonDVs
+GetPartyMonShiny:
+	ld hl, wBattleMonShiny
 	ld a, [wPlayerSubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	ret z
-	ld hl, wPartyMon1DVs
+	ld hl, wPartyMon1Shiny
 	ld a, [wCurBattleMon]
 	jmp GetPartyLocation
 
-GetEnemyMonDVs:
-	ld hl, wEnemyMonDVs
-	ld a, [wEnemySubStatus5]
-	bit SUBSTATUS_TRANSFORMED, a
-	ret z
-	ld hl, wEnemyBackupDVs
+GetEnemyMonShiny:
+	ld hl, wEnemyMonShiny
 	ld a, [wBattleMode]
 	dec a
 	ret z
-	ld hl, wOTPartyMon1DVs
+	ld hl, wOTPartyMon1Shiny
+	ld a, [wCurOTMon]
+	jmp GetPartyLocation
+
+GetEnemyMonIVs:
+	ld hl, wEnemyMonIVs
+	ld a, [wEnemySubStatus5]
+	bit SUBSTATUS_TRANSFORMED, a
+	ret z
+	ld hl, wEnemyBackupIVsAndPersonality
+	ld a, [wBattleMode]
+	dec a
+	ret z
+	ld hl, wOTPartyMon1IVs
 	ld a, [wCurOTMon]
 	jmp GetPartyLocation
 
@@ -3848,10 +3911,10 @@ InitEnemyMon:
 	ld de, wEnemyMonSpecies
 	ld bc, MON_OT_ID
 	rst CopyBytes
-	ld bc, MON_DVS - MON_OT_ID
+	ld bc, MON_IVS - MON_OT_ID
 	add hl, bc
-	ld de, wEnemyMonDVs
-	ld bc, MON_POKERUS - MON_DVS
+	ld de, wEnemyMonIVs
+	ld bc, MON_POKERUS - MON_IVS
 	rst CopyBytes
 	inc hl
 	inc hl
@@ -3915,7 +3978,7 @@ SwitchPlayerMon:
 	ret
 
 SendOutPlayerMon:
-	ld hl, wBattleMonDVs
+	ld hl, wBattleMonForm
 	predef GetUnownLetter
 	hlcoord 1, 5
 	lb bc, 7, 8
@@ -3923,7 +3986,8 @@ SendOutPlayerMon:
 	call WaitBGMap
 	xor a
 	ldh [hBGMapMode], a
-	call GetBattleMonBackpic
+	ld hl, BattleAnimCmd_DropSub
+	call GetBattleMonBackpic_DoAnim
 	xor a
 	ldh [hGraphicStartTile], a
 	ld [wBattleMenuCursorPosition], a
@@ -3938,7 +4002,6 @@ SendOutPlayerMon:
 	xor a
 	ld [wEnemyWrapCount], a
 	call SetPlayerTurn
-	xor a
 	ld [wBattleAfterAnim], a
 	ld [wBattleAnimParam], a
 	ld de, ANIM_SEND_OUT_MON
@@ -3966,7 +4029,16 @@ SendOutPlayerMon:
 	call UpdatePlayerHUD
 	ld a, $1
 	ldh [hBGMapMode], a
-	ret
+
+	ld a, [wPlayerSubStatus4]
+	bit SUBSTATUS_SUBSTITUTE, a
+	ret z
+
+	farcall CheckBattleScene
+	jp nc, AnimateSubOnEntry
+
+	ld hl, BattleAnimCmd_RaiseSub
+	jp GetBattleMonBackpic_DoAnim
 
 NewBattleMonStatus:
 	xor a
@@ -4126,8 +4198,7 @@ PursuitSwitch:
 RecallPlayerMon:
 	ldh a, [hBattleTurn]
 	push af
-	xor a
-	ldh [hBattleTurn], a
+	call SetPlayerTurn
 	ld [wBattleAfterAnim], a
 	ld de, ANIM_RETURN_MON
 	call Call_PlayBattleAnim
@@ -4163,83 +4234,20 @@ HandleHPHealingItem:
 	ld a, b
 	cp HELD_BERRY
 	ret nz
-	ld de, wEnemyMonHP + 1
-	ld hl, wEnemyMonMaxHP
-	ldh a, [hBattleTurn]
-	and a
-	jr z, .go
-	ld de, wBattleMonHP + 1
-	ld hl, wBattleMonMaxHP
 
-.go
-; If, and only if, Pokemon's HP is less than half max, use the item.
-; Store current HP in Buffer 3/4
 	push bc
-	ld a, [de]
-	ld [wHPBuffer2], a
-	add a
-	ld c, a
-	dec de
-	ld a, [de]
-	inc de
-	ld [wHPBuffer2 + 1], a
-	adc a
-	ld b, a
-	cp [hl]
-	ld a, c
+	call SwitchTurnCore
+	call GetHalfMaxHP
+	call SwitchTurnCore
+	call CheckOpponentHasEnoughHP
 	pop bc
-	jr z, .equal
-	jr c, .less
-	ret
-
-.equal
-	inc hl
-	cp [hl]
-	dec hl
-	ret nc
-
-.less
+	ret c
+	
 	call ItemRecoveryAnim
-	; store max HP in wHPBuffer1
-	ld a, [hli]
-	ld [wHPBuffer1 + 1], a
-	ld a, [hl]
-	ld [wHPBuffer1], a
-	ld a, [de]
-	add c
-	ld [wHPBuffer3], a
-	ld c, a
-	dec de
-	ld a, [de]
-	adc 0
-	ld [wHPBuffer3 + 1], a
-	ld b, a
-	ld a, [hld]
-	cp c
-	ld a, [hl]
-	sbc b
-	jr nc, .okay
-	ld a, [hli]
-	ld [wHPBuffer3 + 1], a
-	ld a, [hl]
-	ld [wHPBuffer3], a
 
-.okay
-	ld a, [wHPBuffer3 + 1]
-	ld [de], a
-	inc de
-	ld a, [wHPBuffer3]
-	ld [de], a
-	ldh a, [hBattleTurn]
-	ld [wWhichHPBar], a
-	and a
-	hlcoord 2, 2
-	jr z, .got_hp_bar_coords
-	hlcoord 10, 9
+	ld b, 0 ; item should restore HP equal to c
+	call RestoreHP
 
-.got_hp_bar_coords
-	ld [wWhichHPBar], a
-	predef AnimateHPBar
 UseOpponentItem:
 	call RefreshBattleHuds
 	farcall GetOpponentItem
@@ -4540,9 +4548,15 @@ PrintPlayerHUD:
 	push bc
 
 	ld a, [wCurBattleMon]
-	ld hl, wPartyMon1DVs
+	ld hl, wPartyMon1IVs
 	call GetPartyLocation
-	ld de, wTempMonDVs
+	ld de, wTempMonIVs
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
 	ld a, [hli]
 	ld [de], a
 	inc de
@@ -4622,13 +4636,25 @@ DrawEnemyHUD:
 	ld l, c
 	dec hl
 
-	ld hl, wEnemyMonDVs
-	ld de, wTempMonDVs
+	ld hl, wEnemyMonIVs
+	ld de, wTempMonIVs
 	ld a, [wEnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	jr z, .ok
-	ld hl, wEnemyBackupDVs
+	ld hl, wEnemyBackupIVsAndPersonality
 .ok
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
 	ld a, [hli]
 	ld [de], a
 	inc de
@@ -5937,20 +5963,32 @@ LoadEnemyMon:
 	ld a, b
 	ld [wEnemyMonItem], a
 
-; Initialize DVs
+; Initialize IVs
 
-; If we're in a trainer battle, DVs are predetermined
+; If we're in a trainer battle, IVs are predetermined
 	ld a, [wBattleMode]
 	and a
-	jr z, .InitDVs
+	jr z, .InitIVs
 
 	ld a, [wEnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
-	jr z, .InitDVs
+	jr z, .InitIVs
 
 ; Unknown
-	ld hl, wEnemyBackupDVs
-	ld de, wEnemyMonDVs
+	ld hl, wEnemyBackupIVsAndPersonality
+	ld de, wEnemyMonIVs
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
 	ld a, [hli]
 	ld [de], a
 	inc de
@@ -5958,18 +5996,18 @@ LoadEnemyMon:
 	ld [de], a
 	jmp .Happiness
 
-.InitDVs:
-; Trainer DVs
+.InitIVs:
+; Trainer IVs
 
-; All trainers have preset DVs, determined by class
-; See GetTrainerDVs for more on that
-	farcall GetTrainerDVs
-; These are the DVs we'll use if we're actually in a trainer battle
+; All trainers have preset IVs, determined by class
+; See GetTrainerIVs for more on that
+	farcall GetTrainerIVs
+; These are the IVs we'll use if we're actually in a trainer battle
 	ld a, [wBattleMode]
 	dec a
-	jr nz, .UpdateDVs
+	jr nz, .UpdateIVs
 
-; Wild DVs
+; Wild IVs
 ; Here's where the fun starts
 
 ; Roaming monsters (Entei, Raikou) work differently
@@ -5986,55 +6024,108 @@ LoadEnemyMon:
 ; We'll do something with the result in a minute
 	push af
 
-; Grab DVs
-	call GetRoamMonDVs
+; Grab IVs
+	call GetRoamMonIVs
 	inc hl
+	inc hl
+	inc hl
+	ld bc, wTempIVs + 3
 	ld a, [hld]
-	ld c, a
-	ld b, [hl]
+	ld [bc], a
+	dec bc
+	ld a, [hld]
+	ld [bc], a
+	dec bc
+	ld a, [hld]
+	ld [bc], a
+	dec bc
+	ld a, [hl]
+	ld [bc], a
 
 ; Get back the result of our check
 	pop af
 ; If the RoamMon struct has already been initialized, we're done
-	jr nz, .UpdateDVs
+	jr nz, .UpdateIVs
 
-; If it hasn't, we need to initialize the DVs
+; If it hasn't, we need to initialize the IVs
 ; (HP is initialized at the end of the battle)
-	call GetRoamMonDVs
+	call GetRoamMonIVs
 	inc hl
+	inc hl
+	inc hl
+	ld bc, wTempIVs + 3
 	call BattleRandom
 	ld [hld], a
-	ld c, a
+	ld [bc], a
+	dec bc
+	call BattleRandom
+	ld [hld], a
+	ld [bc], a
+	dec bc
+	call BattleRandom
+	ld [hld], a
+	ld [bc], a
+	dec bc
 	call BattleRandom
 	ld [hl], a
-	ld b, a
-; We're done with DVs
-	jr .UpdateDVs
+	ld [bc], a
+; We're done with IVs
+	jr .UpdateIVs
 
 .NotRoaming:
 ; Register a contains wBattleType
 
 ; Forced shiny battle type
 ; Used by Red Gyarados at Lake of Rage
+	push af
+	ld hl, wEnemyMonShiny
+	farcall GenerateShininess
+	jr nc, .not_shiny
+	ld hl, wEnemyMonShiny
+	set MON_SHINY_F, [hl]
+.not_shiny
+	pop af
 	cp BATTLETYPE_FORCESHINY
-	jr nz, .GenerateDVs
+	jr nz, .GenerateIVs
+	ld hl, wEnemyMonShiny
+	set MON_SHINY_F, [hl]
 
-	lb bc, ATKDEFDV_SHINY, SPDSPCDV_SHINY ; $ea / $aa
-	jr .UpdateDVs
-
-.GenerateDVs:
-; Generate new random DVs
+.GenerateIVs:
+; Generate new random IVs
+	ld hl, wTempIVs + 3
 	call BattleRandom
-	ld b, a
+	ld [hld], a
 	call BattleRandom
-	ld c, a
+	ld [hld], a
+	call BattleRandom
+	ld [hld], a
+	call BattleRandom
+	ld [hl], a
+	ld b, h
+	ld c, l
 
-.UpdateDVs:
-; Input DVs in register bc
-	ld hl, wEnemyMonDVs
-	ld a, b
+.UpdateIVs:
+; Input bc pointer to IVs
+	ld hl, wEnemyMonIVs
+	ld a, [bc]
 	ld [hli], a
-	ld [hl], c
+	inc bc
+	ld a, [bc]
+	ld [hli], a
+	inc bc
+	ld a, [bc]
+	ld [hli], a
+	inc bc
+	ld a, [bc]
+	ld [hl], a
+
+; generate nature
+	ld a, NUM_NATURES
+	ld hl, wEnemyMonNature
+	call BattleRandomRange
+	and NATURE_MASK
+	or [hl]
+	ld [hl], a
 
 ; We've still got more to do if we're dealing with a wild monster
 	ld a, [wBattleMode]
@@ -6061,13 +6152,20 @@ LoadEnemyMon:
 	endc
 	jr nz, .Magikarp
 
-; Get letter based on DVs
-	ld hl, wEnemyMonDVs
-	predef GetUnownLetter
+; Get random letter
+.GenerateUnownLetter
+	ld a, NUM_UNOWN
+	ld hl, wEnemyMonForm
+	call BattleRandomRange
+	inc a
+	and FORM_MASK
+	ld [hl], a
 ; Can't use any letters that haven't been unlocked
 ; If combined with forced shiny battletype, causes an infinite loop
+	predef GetUnownLetter
+	ld a, [wUnownLetter]
 	call CheckUnownLetter
-	jr c, .GenerateDVs ; try again
+	jr nc, .GenerateUnownLetter ; try again
 	jr .Happiness ; skip the Magikarp check
 
 .Magikarp:
@@ -6095,7 +6193,7 @@ LoadEnemyMon:
 	jr nz, .Happiness
 
 ; Get Magikarp's length
-	ld de, wEnemyMonDVs
+	ld de, wEnemyMonIVs
 	ld bc, wPlayerID
 	farcall CalcMagikarpLength
 
@@ -6111,7 +6209,7 @@ LoadEnemyMon:
 ; Try again if length >= 1616 mm (i.e. if LOW(length) >= 4 inches)
 	ld a, [wMagikarpLength + 1]
 	cp 4
-	jr nc, .GenerateDVs
+	jmp nc, .GenerateIVs
 
 ; 20% chance of skipping this check
 	call Random
@@ -6120,7 +6218,7 @@ LoadEnemyMon:
 ; Try again if length >= 1600 mm (i.e. if LOW(length) >= 3 inches)
 	ld a, [wMagikarpLength + 1]
 	cp 3
-	jr nc, .GenerateDVs
+	jmp nc, .GenerateIVs
 
 .CheckMagikarpArea:
 	ld a, [wMapGroup]
@@ -6136,9 +6234,9 @@ LoadEnemyMon:
 ; Try again if length < 1024 mm (i.e. if HIGH(length) < 3 feet)
 	ld a, [wMagikarpLength]
 	cp 3
-	jr c, .GenerateDVs ; try again
+	jmp c, .GenerateIVs ; try again
 
-; Finally done with DVs
+; Finally done with IVs
 
 .Happiness:
 ; Set happiness
@@ -6150,7 +6248,7 @@ LoadEnemyMon:
 ; Fill stats
 	ld de, wEnemyMonMaxHP
 	ld b, FALSE
-	ld hl, wEnemyMonDVs - (MON_DVS - MON_EVS + 1)
+	ld hl, wEnemyMonIVs - (MON_IVS - MON_EVS + 1)
 	predef CalcMonStats
 
 ; If we're in a trainer battle,
@@ -6367,14 +6465,13 @@ CheckSleepingTreeMon:
 INCLUDE "data/wild/treemons_asleep.asm"
 
 CheckUnownLetter:
-; Return carry if the Unown letter hasn't been unlocked yet
-
+; Return carry if the Unown letter in a has been unlocked.
+	ld b, a
 	ld a, [wUnlockedUnowns]
 	ld c, a
 	ld de, 0
 
 .loop
-
 ; Don't check this set unless it's been unlocked
 	srl c
 	jr nc, .next
@@ -6387,14 +6484,13 @@ CheckUnownLetter:
 	ld l, a
 
 	push de
-	ld a, [wUnownLetter]
-	ld de, 1
 	push bc
-	call IsInArray
+	ld a, b
+	call IsInByteArray
 	pop bc
 	pop de
 
-	jr c, .match
+	ret c ; unlocked letter, returns carry
 
 .next
 ; Make sure we haven't gone past the end of the table
@@ -6404,14 +6500,7 @@ CheckUnownLetter:
 	cp NUM_UNLOCKED_UNOWN_SETS * 2
 	jr c, .loop
 
-; Hasn't been unlocked, or the letter is invalid
-	scf
-	ret
-
-.match
-; Valid letter
-	and a
-	ret
+	ret ; not unlocked or invalid letter, returns not carry
 
 INCLUDE "data/wild/unlocked_unowns.asm"
 
@@ -6902,15 +6991,15 @@ GiveExperiencePoints:
 	jmp z, .next_mon
 
 ; Give EVs
-; e = 0 for no Pokérus, 1 for Pokérus
-	ld e, 0
 	ld hl, MON_POKERUS
 	add hl, bc
 	ld a, [hl]
 	and a
-	jr z, .no_pokerus
-	inc e
-.no_pokerus
+	; if z, then a == 0 already
+	jr z, .got_pokerus
+	ld a, 1
+.got_pokerus
+	ld [wPokerusBuffer], a
 	ld hl, MON_EVS
 	add hl, bc
 	push bc
@@ -6924,6 +7013,8 @@ GiveExperiencePoints:
 	ld b, a
 	ld c, NUM_STATS ; six EVs
 .ev_loop
+	ld a, [wPokerusBuffer]
+	ld e, a
 	rlc b
 	rlc b
 	ld a, b
@@ -7038,9 +7129,7 @@ GiveExperiencePoints:
 	ld [wStringBuffer2 + 1], a
 	ldh a, [hQuotient + 2]
 	ld [wStringBuffer2], a
-	ld a, [wCurPartyMon]
-	ld hl, wPartyMonNicknames
-	call GetNickname
+	call GetCurNickname
 	ld hl, Text_MonGainedExpPoint
 	call BattleTextbox
 	ld a, [wStringBuffer2 + 1]
@@ -7496,8 +7585,7 @@ AnimateExpBar:
 	call WaitSFX
 	ld de, SFX_EXP_BAR
 	call PlaySFX
-	ld c, 10
-	call DelayFrames
+	call Wait10Frames
 	pop bc
 	ret
 
@@ -7552,11 +7640,11 @@ SendOutMonText:
 	jr z, .not_linked
 
 ; If we're in a LinkBattle print just "Go <PlayerMon>"
-; unless DoBattle already set [wBattleHasJustStarted]
+; unless DoBattle already set [wTotalBattleTurns] to 0
 	ld hl, GoMonText
-	ld a, [wBattleHasJustStarted]
+	ld a, [wTotalBattleTurns]
 	and a
-	jr nz, .skip_to_textbox
+	jr z, .skip_to_textbox
 
 .not_linked
 ; Depending on the HP of the enemy mon, the game prints a different text
@@ -7867,7 +7955,7 @@ DropPlayerSub:
 	push af
 	ld a, [wBattleMonSpecies]
 	ld [wCurPartySpecies], a
-	ld hl, wBattleMonDVs
+	ld hl, wBattleMonForm
 	predef GetUnownLetter
 	ld de, vTiles2 tile $31
 	predef GetMonBackpic
@@ -7878,8 +7966,7 @@ DropPlayerSub:
 GetBattleMonBackpic_DoAnim:
 	ldh a, [hBattleTurn]
 	push af
-	xor a
-	ldh [hBattleTurn], a
+	call SetPlayerTurn
 	ld a, BANK(BattleAnimCommands)
 	call FarCall_hl
 	pop af
@@ -7904,7 +7991,7 @@ DropEnemySub:
 	ld [wCurSpecies], a
 	ld [wCurPartySpecies], a
 	call GetBaseData
-	ld hl, wEnemyMonDVs
+	ld hl, wEnemyMonForm
 	predef GetUnownLetter
 	ld de, vTiles2
 	predef GetAnimatedFrontpic
@@ -8086,7 +8173,7 @@ InitEnemyWildmon:
 	ld de, wWildMonPP
 	ld bc, NUM_MOVES
 	rst CopyBytes
-	ld hl, wEnemyMonDVs
+	ld hl, wEnemyMonForm
 	predef GetUnownLetter
 	ld a, [wCurPartySpecies]
 	call GetPokemonIndexFromID
@@ -8483,19 +8570,19 @@ GetRoamMonHP:
 	ld hl, wRoamMon3HP
 	ret
 
-GetRoamMonDVs:
-; output: hl = wRoamMonDVs
+GetRoamMonIVs:
+; output: hl = wRoamMonIVs
 	ld a, [wTempEnemyMonSpecies]
 	ld b, a
 	ld a, [wRoamMon1Species]
 	cp b
-	ld hl, wRoamMon1DVs
+	ld hl, wRoamMon1IVs
 	ret z
 	ld a, [wRoamMon2Species]
 	cp b
-	ld hl, wRoamMon2DVs
+	ld hl, wRoamMon2IVs
 	ret z
-	ld hl, wRoamMon3DVs
+	ld hl, wRoamMon3IVs
 	ret
 
 GetRoamMonSpecies:
@@ -8872,8 +8959,7 @@ BattleStartMessage:
 	call PlaySFX
 	call WaitSFX
 
-	ld c, 20
-	call DelayFrames
+	call Wait20Frames
 
 	farcall Battle_GetTrainerName
 
@@ -8886,9 +8972,7 @@ BattleStartMessage:
 
 	xor a
 	ld [wBattleAfterAnim], a
-	ld a, 1
-	ldh [hBattleTurn], a
-	ld a, 1
+	call SetEnemyTurn
 	ld [wBattleAnimParam], a
 	ld de, ANIM_SEND_OUT_MON
 	call Call_PlayBattleAnim
@@ -8951,8 +9035,12 @@ GetWeatherImage:
 	ld de, SandstormWeatherImage
 	ld b, PAL_BATTLE_OB_BROWN
 	cp WEATHER_SANDSTORM
+	jr z, .done
+	ld de, HailWeatherImage
+	ld b, PAL_BATTLE_OB_BLUE
+	cp WEATHER_HAIL
 	ret nz
-	
+
 .done
 	push bc
 	ld b, BANK(WeatherImages) ; c = 4

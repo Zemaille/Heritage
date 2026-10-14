@@ -37,7 +37,26 @@ RuinsOfAlphInnerChamberGrampsScript:
 	jumptextfaceplayer RuinsOfAlphInnerChamberGrampsText
 
 RuinsOfAlphInnerChamberStatue:
-	jumptext RuinsOfAlphInnerChamberStatueText
+	checkflag ENGINE_UNLOCKED_UNOWNS_EXCLAMATION_QUESTION
+	iftrue .already_unlocked
+	readvar VAR_UNOWNCOUNT
+	ifless 26, .dont_unlock
+	opentext
+	writetext RuinsOfAlphInnerChamberStatueText
+	waitbutton
+	writetext RuinsOfAlphInnerChamberStatueUnlockText
+	waitbutton
+	closetext
+	pause 30
+	earthquake 30
+	showemote EMOTE_SHOCK, PLAYER, 20
+	pause 30
+	playsound SFX_STRENGTH
+	earthquake 50
+	setflag ENGINE_UNLOCKED_UNOWNS_EXCLAMATION_QUESTION
+.already_unlocked
+.dont_unlock
+	jumptext RuinsOfAlphStrangePresenceText
 
 RuinsOfAlphStrangePresenceText:
 	text "There is a strange"
@@ -72,6 +91,11 @@ RuinsOfAlphInnerChamberStatueText:
 	text "It's a replica of"
 	line "an ancient #-"
 	cont "MON."
+	done
+
+RuinsOfAlphInnerChamberStatueUnlockText:
+	text "…The statue is"
+	line "shaking!"
 	done
 
 RuinsOfAlphInnerChamber_MapEvents:

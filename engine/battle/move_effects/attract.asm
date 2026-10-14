@@ -12,11 +12,10 @@ BattleCommand_Attract:
 	jr nz, .failed
 
 	set SUBSTATUS_IN_LOVE, [hl]
-	call AnimateCurrentMove
 
 ; 'fell in love!'
 	ld hl, FellInLoveText
-	jmp StdBattleTextbox
+	jmp AnimateCurrentMoveText
 
 .failed
 	jmp FailMove
@@ -43,16 +42,20 @@ CheckOppositeGender:
 	push bc
 	ld a, [wTempEnemyMonSpecies]
 	ld [wCurPartySpecies], a
-	ld hl, wEnemyMonDVs
+	ld hl, wEnemyMonIVs
 	ld a, [wEnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	jr z, .not_transformed
-	ld hl, wEnemyBackupDVs
+	ld hl, wEnemyBackupIVsAndPersonality
 .not_transformed
 	ld a, [hli]
-	ld [wTempMonDVs], a
+	ld [wTempMonIVs], a
+	ld a, [hli]
+	ld [wTempMonIVs + 1], a
+	ld a, [hli]
+	ld [wTempMonIVs + 2], a
 	ld a, [hl]
-	ld [wTempMonDVs + 1], a
+	ld [wTempMonIVs + 3], a
 	ld a, TEMPMON
 	ld [wMonType], a
 	farcall GetGender

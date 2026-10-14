@@ -41,6 +41,11 @@ MACRO? dbw
 	dw \2
 ENDM
 
+MACRO? dbbww
+	db \1, \2
+	dw \3, \4
+ENDM
+
 MACRO? dbbbw
 	db \1, \2, \3
 	dw \4
@@ -113,6 +118,10 @@ MACRO? dab ; dwb address, bank
 	endr
 ENDM
 
+MACRO? dr ; relative offset
+	db \1 - @
+ENDM
+
 MACRO? dname
 	if _NARG == 2
 		def n = \2
@@ -137,4 +146,13 @@ MACRO? sine_table
 	for? x, \1
 		dw sin(x * 0.5 / (\1))
 	endr
+ENDM
+
+MACRO ivs
+; input: \1 = hp (Hh), \2 = atk (a), \3 = def (d), \4 = spd (Ss), \5 = sat (t), \6 = sdf (f)
+; output: db %0SSa_aaaa, %sssd_dddd, %0HHt_tttt, %hhhf_ffff
+	db LOW((\2) | (((\4) << 2) & %1100000))
+	db LOW((\3) | ((\4) << 5))
+	db LOW((\5) | (((\1) << 2) & %1100000))
+	db LOW((\6) | ((\1) << 5))
 ENDM

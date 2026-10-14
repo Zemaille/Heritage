@@ -13,10 +13,8 @@ BattleCommand_MirrorMove:
 	jr nz, .use
 
 .failed
-	call AnimateFailedMove
-
 	ld hl, MirrorMoveFailedText
-	call StdBattleTextbox
+	call AnimateFailedMoveText
 	jmp EndMoveEffect
 
 .use
@@ -45,4 +43,4 @@ BattleCommand_MirrorMove:
 
 .done
 	call BattleCommand_MoveDelay
-	jr ResetTurn
+	jmp ResetTurn

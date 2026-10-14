@@ -15,7 +15,7 @@ DEF REST_SLEEP_TURNS EQU 2
 DEF TREEMON_SLEEP_TURNS EQU 7
 
 ; default move priority
-DEF BASE_PRIORITY EQU 1
+DEF BASE_PRIORITY EQU 6
 
 ; type effectiveness factors, scaled by 10
 DEF SUPER_EFFECTIVE    EQU 20
@@ -76,10 +76,6 @@ DEF STAT_MIN_NORMAL EQU 5
 DEF STAT_MIN_HP EQU 10
 
 DEF MAX_STAT_VALUE EQU 999
-
-; shiny dvs
-DEF ATKDEFDV_SHINY EQU $EA
-DEF SPDSPCDV_SHINY EQU $AA
 
 ; battle classes (wBattleMode values)
 	const_def 1
@@ -231,9 +227,11 @@ DEF ALL_STATUS EQU (1 << PSN) | (1 << BRN) | (1 << FRZ) | (1 << PAR) | SLP_MASK
 	const WEATHER_RAIN
 	const WEATHER_SUN
 	const WEATHER_SANDSTORM
+	const WEATHER_HAIL
 	const WEATHER_RAIN_END
 	const WEATHER_SUN_END
 	const WEATHER_SANDSTORM_END
+	const WEATHER_HAIL_END
 
 ; wBattleAction
 	const_def
