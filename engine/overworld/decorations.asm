@@ -1,8 +1,20 @@
 InitDecorations:
-	ld a, DECO_FEATHERY_BED
+	ld a, DECO_PIKACHU_BED
 	ld [wDecoBed], a
 	ld a, DECO_TOWN_MAP
 	ld [wDecoPoster], a
+	ld a, DECO_GREEN_CARPET
+	ld [wDecoCarpet], a
+	ld a, DECO_TROPICPLANT
+	ld [wDecoPlant], a
+	ld a, DECO_SNES
+	ld [wDecoConsole], a
+	ld a, DECO_GENGAR_DOLL
+	ld [wDecoLeftOrnament], a
+	ld a, DECO_SURF_PIKACHU_DOLL
+	ld [wDecoRightOrnament], a
+	ld a, DECO_BIG_LAPRAS_DOLL
+	ld [wDecoBigDoll], a
 	ret
 
 _PlayerDecorationMenu:

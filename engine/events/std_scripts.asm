@@ -625,6 +625,11 @@ InitializeEventsScript:
 	setevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
 	setevent EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL
 	setevent EVENT_INITIALIZED_EVENTS
+	setevent EVENT_PLAYERS_HOUSE_2F_CONSOLE
+	setevent EVENT_PLAYERS_HOUSE_2F_DOLL_1
+	setevent EVENT_PLAYERS_HOUSE_2F_DOLL_2
+	setevent EVENT_PLAYERS_HOUSE_2F_BIG_DOLL
+	special ToggleDecorationsVisibility
 	endcallback
 
 AskNumber1MScript:
