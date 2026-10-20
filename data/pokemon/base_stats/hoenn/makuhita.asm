@@ -11,7 +11,7 @@
 	db GENDER_F25 ; gender ratio
 	db 20 ; step cycles to hatch
 	INCBIN "gfx/pokemon/hoenn/makuhita/front.dimensions"
-	db THICK_FAT, GUTS ; wBaseAbility1, wBaseAbility2
+	db NO_ABILITY, NO_ABILITY
 	dw NULL ; Padding left-over from the unused back pic
 	db GROWTH_FLUCTUATING ; growth rate
 	dn EGG_HUMANSHAPE, EGG_HUMANSHAPE ; egg groups

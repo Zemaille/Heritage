@@ -11,7 +11,7 @@
 	db GENDER_F100 ; gender ratio
 	db 20 ; step cycles to hatch
 	INCBIN "gfx/pokemon/kanto/kangaskhan/front.dimensions"
-	db EARLY_BIRD, EARLY_BIRD ; wBaseAbility1, wBaseAbility2
+	db NO_ABILITY, NO_ABILITY
 	dw NULL ; Padding left-over from the unused back pic
 	db GROWTH_MEDIUM_FAST ; growth rate
 	dn EGG_MONSTER, EGG_MONSTER ; egg groups

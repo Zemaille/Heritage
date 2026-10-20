@@ -1277,46 +1277,9 @@ CalcMonStatC:
 	jmp PopBCDEHL
 
 GetNatureStatMultiplier::
-; a points to Nature
-; c is 1-6 according to the stat (STAT_HP to STAT_SDEF)
-; returns (sets a to) 9 if c is lowered, 11 if raised, 10 if neutral
-; (to be used in calculations in CalcPkmnStatC)
-	push de
-	ld d, a
-	ld a, c
-	cp STAT_HP
-	jr z, .neutral
-	ld a, d
-	and NATURE_MASK
-	cp NO_NATURE
-	jr z, .neutral
-	ld d, STAT_HP
-.loop
-	inc d
-	sub 5
-	jr nc, .loop
-	add 7 ; Atk-SDf is 2-6, not 0-4
-	cp c
-	jr z, .penalty
-	ld a, d
-	cp c
-	jr z, .bonus
-.neutral
+; not using natures
+; just always set to 10 to act neutral
 	ld a, 10
-	pop de
-	ret
-.bonus
-	ld a, 11
-	pop de
-	ret
-.penalty
-	; Neutral natures (divisible by 6) raise and lower the same stat,
-	; but +10% -10% isn't neutral (the result is 99%), so we need to
-	; avoid messing with it altogether.
-	cp d
-	jr z, .neutral
-	ld a, 9
-	pop de
 	ret
 
 GivePoke::

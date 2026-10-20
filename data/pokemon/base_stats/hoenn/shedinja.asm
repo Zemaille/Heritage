@@ -11,7 +11,7 @@
 	db GENDER_UNKNOWN ; gender ratio
 	db 15 ; step cycles to hatch
 	INCBIN "gfx/pokemon/hoenn/shedinja/front.dimensions"
-	db WONDER_GUARD, WONDER_GUARD ; wBaseAbility1, wBaseAbility2
+	db NO_ABILITY, NO_ABILITY
 	dw NULL ; Padding left-over from the unused back pic
 	db GROWTH_ERRATIC ; growth rate
 	dn EGG_MINERAL, EGG_MINERAL ; egg groups

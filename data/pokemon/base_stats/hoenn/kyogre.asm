@@ -11,7 +11,7 @@
 	db GENDER_UNKNOWN ; gender ratio
 	db 120 ; step cycles to hatch
 	INCBIN "gfx/pokemon/hoenn/kyogre/front.dimensions"
-	db DRIZZLE, DRIZZLE ; wBaseAbility1, wBaseAbility2
+	db NO_ABILITY, NO_ABILITY
 	dw NULL ; Padding left-over from the unused back pic
 	db GROWTH_SLOW ; growth rate
 	dn EGG_NONE, EGG_NONE ; egg groups

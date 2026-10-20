@@ -151,10 +151,10 @@ if DEF(_DEBUG)
 	; post-e4
 	setflag ENGINE_CREDITS_SKIP
 	; good party
-	givepoke TYRANITAR, 100, LEFTOVERS
+	givepoke TYRANITAR, 99, LEFTOVERS
 	; hm slaves
-	givepoke MANTINE, 100, LEFTOVERS
-	givepoke DUNSPARCE, 100, LEFTOVERS
+	givepoke MANTINE, 99, LEFTOVERS
+	givepoke DUNSPARCE, 99, LEFTOVERS
 	givepokemove EARTHQUAKE,    wPartyMon1, 0
 	givepokemove ROCK_SLIDE,    wPartyMon1, 1
 	givepokemove PURSUIT, 	    wPartyMon1, 2
@@ -169,10 +169,6 @@ if DEF(_DEBUG)
 	givepokemove WATERFALL,  wPartyMon3, 3
 	; misc pokemon for testing
 	givepoke GENGAR, 50
-	givepokemove TRANSFORM,  wPartyMon1, 0
-	givepokemove RAIN_DANCE,  wPartyMon1, 1
-	givepokemove GROWL,  wPartyMon1, 2
-	givepokemove PSYCHIC_M,  wPartyMon1, 3
 	givepoke NINCADA, 50
 	givepoke WURMPLE, 50
 	; intro events

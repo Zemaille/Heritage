@@ -11,7 +11,7 @@
 	db GENDER_F50 ; gender ratio
 	db 20 ; step cycles to hatch
 	INCBIN "gfx/pokemon/hoenn/medicham/front.dimensions"
-	db PURE_POWER, PURE_POWER ; wBaseAbility1, wBaseAbility2
+	db NO_ABILITY, NO_ABILITY
 	dw NULL ; Padding left-over from the unused back pic
 	db GROWTH_MEDIUM_FAST ; growth rate
 	dn EGG_HUMANSHAPE, EGG_HUMANSHAPE ; egg groups

@@ -753,30 +753,99 @@ LoadBluePage:
 	dw wBufferMonOT ; unused
 	dw wBufferMonOT
 
-; TODO - Load and print nature
 LoadOrangePage:
-	farcall PrintAbility
-	; Place "Nature:"
-	ld de, .NatureString1
-	hlcoord 0, 13
-	rst PlaceString
+	call StatsScreen_placeCaughtLevel
+	call StatsScreen_placeCaughtTime
+	call StatsScreen_placeCaughtLocation
 
-	; Snag our nature
-	push bc
-	ld a, [wCurPartyMon]
-	ld bc, PARTYMON_STRUCT_LENGTH
-	ld hl, wPartyMon1Personality
-	rst AddNTimes
-	ld a, [hl]
-	and NATURE_MASK
-	ld b, a
-	hlcoord 4, 14
-	farcall PrintNature
-	pop bc
+StatsScreen_placeCaughtLevel:
+	; caught level
+	ld a, [wTempMonCaughtLevel]
+	and CAUGHT_LEVEL_MASK	
+	and a
+	jr z, .unknown_level
+	cp CAUGHT_EGG_LEVEL ; egg marker value
+	jr nz, .print
+	ld a, EGG_LEVEL ; egg hatch level
+
+.print
+	ld [wTextDecimalByte], a
+	hlcoord 12, 9
+	ld de, wTextDecimalByte
+	lb bc, PRINTNUM_LEFTALIGN | 1, 3
+	call PrintNum
+	hlcoord 11, 9
+	ld [hl], '<LV>'
 	ret
 
-.NatureString1
-	db "Nature:@"
+.unknown_level
+	ld de, .MetUnknownLevelString
+	hlcoord 11, 9
+	call PlaceString
+	ret   
+.MetUnknownLevelString:
+	db "@"
+
+StatsScreen_placeCaughtTime:
+	ld a, [wTempMonCaughtTime]
+	and CAUGHT_TIME_MASK
+	jr z, .unknown_time
+	rlca
+	rlca
+	dec a
+	ld hl, .times
+	call GetNthString
+	ld d, h
+	ld e, l
+	call CopyName1
+	ld de, wStringBuffer2
+	hlcoord 6, 9
+	call PlaceString
+	ret
+.unknown_time
+	ld a, 0
+	ld hl, .unknown_time_text
+	call GetNthString
+	ld d, h
+	ld e, l
+	call CopyName1
+	ld de, wStringBuffer2
+	hlcoord 6, 9
+	call PlaceString
+	ret
+.times
+	db "MORN@"
+	db "DAY@"
+	db "NITE@"
+.unknown_time_text
+	db "TRADE@"
+
+StatsScreen_placeCaughtLocation:
+	ld de, .MetAtMapString
+	hlcoord 1, 9
+	call PlaceString
+	ld a, [wTempMonCaughtLocation]
+	and MON_CAUGHTLOCATION
+	jr z, .unknown_location
+	cp LANDMARK_EVENT
+	jr z, .unknown_location
+	cp LANDMARK_GIFT
+	jr z, .unknown_location
+	ld e, a
+	farcall GetLandmarkName
+	ld de, wStringBuffer1
+	hlcoord 2, 10
+	call PlaceString
+	ret	
+.unknown_location:
+	ld de, .MetUnknownMapString
+	hlcoord 2, 10
+	call PlaceString
+	ret
+.MetAtMapString:
+	db "MET: @"
+.MetUnknownMapString:
+	db "UNKNOWN LOCATION@"
 
 IDNoString:
 	db "<ID>№.@"

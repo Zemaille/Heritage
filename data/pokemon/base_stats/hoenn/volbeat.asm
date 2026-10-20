@@ -11,7 +11,7 @@
 	db GENDER_F0 ; gender ratio
 	db 15 ; step cycles to hatch
 	INCBIN "gfx/pokemon/hoenn/volbeat/front.dimensions"
-	db SWARM, ILLUMINATE ; wBaseAbility1, wBaseAbility2
+	db NO_ABILITY, NO_ABILITY
 	dw NULL ; Padding left-over from the unused back pic
 	db GROWTH_ERRATIC ; growth rate
 	dn EGG_BUG, EGG_HUMANSHAPE ; egg groups

@@ -11,7 +11,7 @@
 	db GENDER_F50 ; gender ratio
 	db 40 ; step cycles to hatch
 	INCBIN "gfx/pokemon/hoenn/wailord/front.dimensions"
-	db WATER_VEIL, OBLIVIOUS ; wBaseAbility1, wBaseAbility2
+	db NO_ABILITY, NO_ABILITY
 	dw NULL ; Padding left-over from the unused back pic
 	db GROWTH_FLUCTUATING ; growth rate
 	dn EGG_GROUND, EGG_WATER_2 ; egg groups
