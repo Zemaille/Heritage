@@ -10,8 +10,9 @@ TypeNames:
 	dw Rock
 	dw Bird
 	dw Bug
-	dw Ghost
 	dw Steel
+	dw Dragon
+	dw Dark
 	assert_table_length UNUSED_TYPES
 
 rept UNUSED_TYPES_END - UNUSED_TYPES - 1 ; discount CURSE_TYPE
@@ -26,9 +27,11 @@ endr
 	dw Electric
 	dw Psychic
 	dw Ice
-	dw Dragon
-	dw Dark
+	dw Ghost
 	dw Fairy
+	dw Normal_S
+	dw Flying_S
+	dw Dragon_S
 	assert_table_length TYPES_END
 
 Normal:    db "NORMAL@"
@@ -51,3 +54,6 @@ Steel:     db "STEEL@"
 Dragon:    db "DRAGON@"
 Dark:      db "DARK@"
 Fairy:     db "FAIRY@"
+Normal_S:  db "NORMAL@"
+Flying_S:  db "FLYING@"
+Dragon_S:  db "DRAGON@"

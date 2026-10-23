@@ -20,4 +20,7 @@ PokedexTypeSearchStrings:
 	db "  DARK  @"
 	db " STEEL  @"
 	db " FAIRY  @"
+	db "  NULL  @"
+	db "  NULL  @"
+	db "  NULL  @"
 	assert_table_length NUM_TYPES + 1

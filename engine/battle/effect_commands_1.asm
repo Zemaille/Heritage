@@ -2985,6 +2985,7 @@ ConfusionDamageCalc:
 	ld a, b
 	and a
 	jr z, .DoneItem
+	ld d, b
 
 	ld hl, TypeBoostItems
 
@@ -2994,7 +2995,7 @@ ConfusionDamageCalc:
 	jr z, .DoneItem
 
 ; Item effect
-	cp b
+	cp d
 	ld a, [hli]
 	jr nz, .NextItem
 
@@ -3003,7 +3004,7 @@ ConfusionDamageCalc:
 	ld a, BATTLE_VARS_MOVE_TYPE
 	call GetBattleVar
 	cp b
-	jr nz, .DoneItem
+	jr nz, .NextItem
 
 ; * 100 + item effect amount
 	ld a, c

@@ -19,4 +19,7 @@ PokedexTypeSearchConversionTable:
 	db DARK
 	db STEEL
 	db FAIRY
+	db NORMAL_S
+	db FLYING_S
+	db DRAGON_S
 	assert_table_length NUM_TYPES

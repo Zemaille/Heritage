@@ -83,6 +83,7 @@ if DEF(_DEBUG)
 	giveitem KINGS_ROCK
 	giveitem AMULET_COIN
 	giveitem SCOPE_LENS
+	giveitem SOFT_SAND
 	; all badges
 	setflag ENGINE_ZEPHYRBADGE
 	setflag ENGINE_HIVEBADGE
@@ -151,10 +152,9 @@ if DEF(_DEBUG)
 	; post-e4
 	setflag ENGINE_CREDITS_SKIP
 	; good party
-	givepoke TYRANITAR, 99, LEFTOVERS
-	; hm slaves
-	givepoke MANTINE, 99, LEFTOVERS
-	givepoke DUNSPARCE, 99, LEFTOVERS
+	givepoke TYRANITAR, 50, LEFTOVERS
+	givepoke MANTINE, 50, LEFTOVERS
+	givepoke DUNSPARCE, 50, LEFTOVERS
 	givepokemove EARTHQUAKE,    wPartyMon1, 0
 	givepokemove ROCK_SLIDE,    wPartyMon1, 1
 	givepokemove PURSUIT, 	    wPartyMon1, 2
@@ -167,7 +167,6 @@ if DEF(_DEBUG)
 	givepokemove ROCK_SMASH, wPartyMon3, 1
 	givepokemove HEADBUTT,   wPartyMon3, 2
 	givepokemove WATERFALL,  wPartyMon3, 3
-	; misc pokemon for testing
 	givepoke GENGAR, 50
 	givepoke NINCADA, 50
 	givepoke WURMPLE, 50
